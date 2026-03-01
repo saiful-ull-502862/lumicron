@@ -4,8 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSiteConfig } from '../utils/content';
 
 const siteConfig = await getSiteConfig();
-// Update this with your actual formspree endpoint in production
-const formAction = "https://formspree.io/f/xbjvpppq"; // Dummy ID, swap later
+const contactEmail = siteConfig.contactEmail;
 ---
 
 <BaseLayout title="Contact">
@@ -16,10 +15,13 @@ const formAction = "https://formspree.io/f/xbjvpppq"; // Dummy ID, swap later
       <p class="text-[var(--text-muted)] max-w-xl mx-auto tracking-wide font-light leading-relaxed">
         Whether you need coverage for an event, a portrait session, or just want to discuss a collaboration, I'd love to hear from you.
       </p>
+      <a href={`mailto:${contactEmail}`} class="inline-block mt-6 text-[var(--color-brand-primary)] hover:text-[var(--color-brand-accent)] transition-colors tracking-widest text-sm uppercase">
+        {contactEmail}
+      </a>
     </div>
 
     <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-8 md:p-12" data-aos="fade-up" data-aos-delay="200">
-      <form action={formAction} method="POST" class="space-y-8">
+      <form action={`mailto:${contactEmail}`} method="POST" enctype="text/plain" class="space-y-8">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-2">
