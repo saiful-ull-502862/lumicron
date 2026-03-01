@@ -1,0 +1,42 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# astro
+.astro/
+
+# environment variables
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# debug
+npm-debug.log*
+.claude/
+vigorous-visual/
+
+# Album photos — ignore all, then whitelist samples
+content/albums/**/*.jpg
+!content/albums/birthday-photoshoot/_DSC6098.jpg
+!content/albums/birthday-photoshoot/_DSC6141.jpg
+!content/albums/birthday-photoshoot/_DSC6144.jpg
+!content/albums/graduation-photoshoot/_DSC6465.jpg
+!content/albums/graduation-photoshoot/_DSC6466.jpg
+!content/albums/graduation-photoshoot/_DSC6469.jpg
+!content/albums/pitha-uthsob/_DSC6373.jpg
+!content/albums/pitha-uthsob/_DSC6376.jpg
+!content/albums/pitha-uthsob/_DSC6377.jpg
+!content/albums/saree-shoot/_DSC8231.jpg
+!content/albums/saree-shoot/_DSC8232.jpg
+!content/albums/saree-shoot/_DSC8252.jpg

@@ -1,0 +1,28 @@
+{
+  "title": "BirthDay Photoshoot",
+  "slug": "birthday-photoshoot",
+  "date": "2025-01-01",
+  "location": "Studio",
+  "categories": [
+    "events"
+  ],
+  "description": "A collection from BirthDay Photoshoot.",
+  "cover": "_DSC6098.jpg",
+  "photos": [
+    {
+      "file": "_DSC6098.jpg",
+      "caption": "BirthDay Photoshoot - Photo 1",
+      "featured": true
+    },
+    {
+      "file": "_DSC6141.jpg",
+      "caption": "BirthDay Photoshoot - Photo 2",
+      "featured": false
+    },
+    {
+      "file": "_DSC6144.jpg",
+      "caption": "BirthDay Photoshoot - Photo 3",
+      "featured": false
+    }
+  ]
+}

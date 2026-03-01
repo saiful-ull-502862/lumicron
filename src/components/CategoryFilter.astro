@@ -1,0 +1,61 @@
+---
+// src/components/CategoryFilter.astro
+import { getCategories } from '../utils/content';
+const categories = await getCategories();
+const allCategories = [{ name: 'All Work', slug: 'all' }, ...categories];
+---
+
+<div class="flex flex-wrap justify-center gap-4 mb-16 px-4">
+  {allCategories.map((cat, index) => (
+    <button 
+      class={`category-tab px-6 py-2 rounded-full border text-sm uppercase tracking-widest transition-all duration-300 hover-target ${index === 0 ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-text)] border-[var(--color-brand-primary)] active-tab' : 'bg-transparent text-[var(--text-muted)] border-[var(--border-color)] hover:border-[var(--color-brand-primary)] hover:text-[var(--text-color)]'}`}
+      data-category={cat.slug}
+    >
+      {cat.name}
+    </button>
+  ))}
+</div>
+
+<script>
+  function initCategoryFilter() {
+    const tabs = document.querySelectorAll('.category-tab');
+    const items = document.querySelectorAll('.gallery-item');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Update active tab styling
+        tabs.forEach(t => {
+          t.classList.remove('bg-[var(--color-brand-primary)]', 'text-[var(--color-brand-text)]', 'border-[var(--color-brand-primary)]', 'active-tab');
+          t.classList.add('bg-transparent', 'text-[var(--text-muted)]', 'border-[var(--border-color)]');
+        });
+        tab.classList.remove('bg-transparent', 'text-[var(--text-muted)]', 'border-[var(--border-color)]');
+        tab.classList.add('bg-[var(--color-brand-primary)]', 'text-[var(--color-brand-text)]', 'border-[var(--color-brand-primary)]', 'active-tab');
+
+        // Filter items
+        const selectedCategory = (tab as HTMLElement).dataset.category;
+        
+        items.forEach(item => {
+          const itemCategories = (item as HTMLElement).dataset.categories?.split(',') || [];
+          const match = selectedCategory === 'all' || itemCategories.includes(selectedCategory!);
+          
+          if (match) {
+            (item as HTMLElement).style.display = 'block';
+            setTimeout(() => {
+              (item as HTMLElement).style.opacity = '1';
+              (item as HTMLElement).style.transform = 'scale(1) translateY(0)';
+            }, 50);
+          } else {
+            (item as HTMLElement).style.opacity = '0';
+            (item as HTMLElement).style.transform = 'scale(0.95) translateY(10px)';
+            setTimeout(() => {
+              (item as HTMLElement).style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCategoryFilter);
+  document.addEventListener('astro:page-load', initCategoryFilter);
+</script>

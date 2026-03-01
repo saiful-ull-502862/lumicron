@@ -1,0 +1,19 @@
+{
+  "categories": [
+    {
+      "name": "Portraits",
+      "slug": "portraits",
+      "cover": "albums/saree-shoot/_DSC8231.jpg"
+    },
+    {
+      "name": "Events",
+      "slug": "events",
+      "cover": "albums/birthday-photoshoot/_DSC6098.jpg"
+    },
+    {
+      "name": "Cultural",
+      "slug": "cultural",
+      "cover": "albums/pitha-uthsob/_DSC6373.jpg"
+    }
+  ]
+}

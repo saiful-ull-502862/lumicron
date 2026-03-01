@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import FeaturedWork from '../components/FeaturedWork.astro';
+import { getSiteConfig } from '../utils/content';
+
+const siteConfig = await getSiteConfig();
+---
+
+<BaseLayout title={siteConfig.siteName}>
+  <HeroSection />
+  <FeaturedWork />
+</BaseLayout>

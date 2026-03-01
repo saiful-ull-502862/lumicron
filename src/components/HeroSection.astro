@@ -1,0 +1,38 @@
+---
+// src/components/HeroSection.astro
+import { getSiteConfig } from '../utils/content';
+import { Image } from 'astro:assets';
+const siteConfig = await getSiteConfig();
+
+// A default featured background image
+import heroBg from '../../content/albums/pitha-uthsob/_DSC6373.jpg';
+---
+
+<section class="hero-container relative h-screen w-full overflow-hidden flex items-center justify-center -mt-[88px]">
+  <div class="absolute inset-0 z-0">
+    <div class="hero-parallax h-[130%] w-full -top-[15%] relative">
+      <Image src={heroBg} alt="Hero Background" class="w-full h-full object-cover filter brightness-50 dark:brightness-40" />
+    </div>
+  </div>
+  
+  <div class="relative z-10 text-center px-6" data-aos="fade-up" data-aos-duration="1200">
+    <h1 class="text-6xl md:text-[7rem] tracking-wider mb-4 glow-text">
+      <span class="text-[var(--text-color)] font-serif italic pr-1 font-bold">Lumi</span><span class="innovative-gradient-text font-sans font-black uppercase text-[0.9em]">cron</span>
+    </h1>
+    <p class="text-xl md:text-2xl text-[var(--color-brand-text)] font-light tracking-[0.2em] uppercase max-w-2xl mx-auto leading-relaxed">
+      {siteConfig.tagline}
+    </p>
+    
+    <div class="mt-12">
+      <a href="/lumicron/portfolio" class="hover-target inline-block px-8 py-4 border border-[var(--color-brand-accent)] text-[var(--color-brand-text)] uppercase tracking-widest text-sm hover:bg-[var(--color-brand-accent)] hover:text-[#0A0A0B] transition-colors duration-300">
+        Explore Portfolio
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+    <svg class="w-6 h-6 text-[var(--color-brand-text)] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+</section>

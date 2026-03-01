@@ -1,0 +1,94 @@
+---
+// src/pages/contact.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteConfig } from '../utils/content';
+
+const siteConfig = await getSiteConfig();
+// Update this with your actual formspree endpoint in production
+const formAction = "https://formspree.io/f/xbjvpppq"; // Dummy ID, swap later
+---
+
+<BaseLayout title="Contact">
+  <div class="pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto min-h-screen">
+    
+    <div class="text-center mb-16" data-aos="fade-down">
+      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">Let's Connect</h1>
+      <p class="text-[var(--text-muted)] max-w-xl mx-auto tracking-wide font-light leading-relaxed">
+        Whether you need coverage for an event, a portrait session, or just want to discuss a collaboration, I'd love to hear from you.
+      </p>
+    </div>
+
+    <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-8 md:p-12" data-aos="fade-up" data-aos-delay="200">
+      <form action={formAction} method="POST" class="space-y-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-2">
+            <label for="name" class="block text-xs uppercase tracking-widest text-[var(--text-color)] font-medium">Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              required
+              class="w-full bg-transparent border-b border-[var(--border-color)] py-3 px-0 text-[var(--text-color)] focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-0 transition-colors bg-clip-text"
+              placeholder="J. Doe"
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label for="email" class="block text-xs uppercase tracking-widest text-[var(--text-color)] font-medium">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required
+              class="w-full bg-transparent border-b border-[var(--border-color)] py-3 px-0 text-[var(--text-color)] focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-0 transition-colors"
+              placeholder="hello@example.com"
+            />
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="subject" class="block text-xs uppercase tracking-widest text-[var(--text-color)] font-medium">Subject</label>
+          <input 
+            type="text" 
+            id="subject" 
+            name="subject" 
+            required
+            class="w-full bg-transparent border-b border-[var(--border-color)] py-3 px-0 text-[var(--text-color)] focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-0 transition-colors"
+            placeholder="Print Inquiry"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="message" class="block text-xs uppercase tracking-widest text-[var(--text-color)] font-medium">Message</label>
+          <textarea 
+            id="message" 
+            name="message" 
+            rows="5"
+            required
+            class="w-full bg-transparent border-b border-[var(--border-color)] py-3 px-0 text-[var(--text-color)] focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-0 transition-colors resize-none"
+            placeholder="Your message here..."
+          ></textarea>
+        </div>
+
+        <div class="pt-4 flex justify-between items-center">
+          <div class="flex space-x-4">
+            {Object.entries(siteConfig.socialLinks).map(([platform, url]) => (
+              url && (
+                <a href={url as string} target="_blank" rel="noopener noreferrer" class="hover-target text-[var(--text-muted)] hover:text-[var(--color-brand-accent)] transition-colors capitalize text-sm tracking-widest">
+                  {platform}
+                </a>
+              )
+            ))}
+          </div>
+          
+          <button type="submit" class="hover-target inline-block px-10 py-4 bg-[var(--text-color)] text-[var(--bg-color)] hover:bg-[var(--color-brand-primary)] hover:text-white transition-colors duration-300 uppercase tracking-widest text-sm font-medium">
+            Send Message
+          </button>
+        </div>
+        
+      </form>
+    </div>
+
+  </div>
+</BaseLayout>

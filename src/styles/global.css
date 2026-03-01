@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Gloomy Muted Palette ── */
+  --color-brand-primary: #8A5A6B;
+  /* Dusty Mauve */
+  --color-brand-accent: #7B8E8F;
+  /* Muted Steel */
+  --color-brand-purple: #4A3D5C;
+  /* Deep Muted Violet */
+
+  --color-brand-bg-dark: #080706;
+  --color-brand-bg-dark-light: #100E0C;
+  --color-brand-bg-dark-lighter: #181614;
+
+  --color-brand-text: #B8B0A8;
+  --color-brand-text-muted: #665E56;
+
+  --font-heading: 'Georgia', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bg-color: #E8E4DF;
+    --text-color: #2A2622;
+    --bg-secondary: #D8D3CC;
+    --text-muted: #7A7268;
+    --border-color: #CBC5BC;
+  }
+
+  :root.dark {
+    --bg-color: var(--color-brand-bg-dark);
+    --text-color: var(--color-brand-text);
+    --bg-secondary: var(--color-brand-bg-dark-light);
+    --text-muted: var(--color-brand-text-muted);
+    --border-color: #1E1B18;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  body {
+    @apply antialiased transition-colors duration-300;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  ::selection {
+    background-color: var(--color-brand-purple);
+    color: var(--color-brand-text);
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-purple));
+  mix-blend-mode: screen;
+  transition: width 0.25s ease, height 0.25s ease;
+}
+
+.custom-cursor.hovering {
+  width: 60px;
+  height: 60px;
+  mix-blend-mode: normal;
+  opacity: 0.8;
+}
+
+.custom-cursor.hidden {
+  opacity: 0;
+}
+
+.glow-text {
+  text-shadow: 0 0 40px rgba(138, 90, 107, 0.2), 0 0 80px rgba(74, 61, 92, 0.15);
+}
+
+.innovative-gradient-text {
+  background: linear-gradient(to right, var(--color-brand-primary), var(--color-brand-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--color-brand-primary), var(--color-brand-purple));
+  left: 0;
+  bottom: -4px;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}

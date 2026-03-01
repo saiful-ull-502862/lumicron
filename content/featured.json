@@ -1,0 +1,28 @@
+{
+  "featured": [
+    {
+      "albumSlug": "birthday-photoshoot",
+      "file": "_DSC6098.jpg",
+      "title": "BirthDay Photoshoot",
+      "category": "events"
+    },
+    {
+      "albumSlug": "saree-shoot",
+      "file": "_DSC8231.jpg",
+      "title": "Photoshoot in Saree",
+      "category": "portraits"
+    },
+    {
+      "albumSlug": "pitha-uthsob",
+      "file": "_DSC6373.jpg",
+      "title": "Pitha Uthsob",
+      "category": "cultural"
+    },
+    {
+      "albumSlug": "graduation-photoshoot",
+      "file": "_DSC6465.jpg",
+      "title": "Graduation Photoshoot",
+      "category": "events"
+    }
+  ]
+}

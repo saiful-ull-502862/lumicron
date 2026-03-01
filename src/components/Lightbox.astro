@@ -1,0 +1,53 @@
+---
+// src/components/Lightbox.astro
+import 'photoswipe/style.css';
+---
+
+<div id="pswp-init-script"></div>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import PhotoSwipe from 'photoswipe';
+  
+  function initLightbox() {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#pswp-gallery',
+      children: 'a.pswp-item',
+      pswpModule: PhotoSwipe,
+      bgOpacity: 0.9,
+      spacing: 0.1,
+      showHideAnimationType: 'zoom',
+      // Add custom UI for EXIF/caption if needed later
+    });
+
+    lightbox.init();
+    
+    // Store in window for view transitions
+    (window as any).__lightbox = lightbox;
+  }
+
+  document.addEventListener('DOMContentLoaded', initLightbox);
+  document.addEventListener('astro:page-load', () => {
+    if ((window as any).__lightbox) {
+      (window as any).__lightbox.destroy();
+    }
+    initLightbox();
+  });
+</script>
+
+<style is:global>
+  /* Customizing PhotoSwipe for Dark Mode/Lumicron branding */
+  .pswp__bg {
+    background: var(--bg-color);
+  }
+  .pswp__button {
+    color: var(--text-color);
+  }
+  .pswp__button:hover {
+    color: var(--color-brand-primary);
+  }
+  .pswp__counter {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+  }
+</style>

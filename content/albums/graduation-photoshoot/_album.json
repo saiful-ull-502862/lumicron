@@ -1,0 +1,28 @@
+{
+  "title": "Graduation Photoshoot",
+  "slug": "graduation-photoshoot",
+  "date": "2025-05-20",
+  "location": "University Campus",
+  "categories": [
+    "events"
+  ],
+  "description": "A beautiful graduation photoshoot celebrating an important milestone.",
+  "cover": "_DSC6465.jpg",
+  "photos": [
+    {
+      "file": "_DSC6465.jpg",
+      "caption": "Graduation Photoshoot - Photo 1",
+      "featured": true
+    },
+    {
+      "file": "_DSC6466.jpg",
+      "caption": "Graduation Photoshoot - Photo 2",
+      "featured": false
+    },
+    {
+      "file": "_DSC6469.jpg",
+      "caption": "Graduation Photoshoot - Photo 3",
+      "featured": false
+    }
+  ]
+}

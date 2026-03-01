@@ -1,0 +1,28 @@
+{
+  "title": "Pitha Uthsob",
+  "slug": "pitha-uthsob",
+  "date": "2025-01-01",
+  "location": "Studio",
+  "categories": [
+    "cultural"
+  ],
+  "description": "A collection from Pitha Uthsob.",
+  "cover": "_DSC6373.jpg",
+  "photos": [
+    {
+      "file": "_DSC6373.jpg",
+      "caption": "Pitha Uthsob - Photo 1",
+      "featured": true
+    },
+    {
+      "file": "_DSC6376.jpg",
+      "caption": "Pitha Uthsob - Photo 2",
+      "featured": false
+    },
+    {
+      "file": "_DSC6377.jpg",
+      "caption": "Pitha Uthsob - Photo 3",
+      "featured": false
+    }
+  ]
+}

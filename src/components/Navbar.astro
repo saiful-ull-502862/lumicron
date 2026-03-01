@@ -1,0 +1,87 @@
+---
+// src/components/Navbar.astro
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 bg-transparent text-[var(--text-color)]">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <!-- Logo -->
+    <a href="/lumicron/" class="logo-link hover-target flex items-center gap-2 group">
+      <img src="/lumicron/logo/lumicron-logo.svg" alt="Lumicron" class="hidden md:block h-10 w-auto transition-transform duration-300 group-hover:scale-105" />
+      <img src="/lumicron/logo/lumicron-icon.svg" alt="Lumicron Icon" class="block md:hidden h-8 w-auto transition-transform duration-300 group-hover:scale-110" />
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-10 text-xs uppercase tracking-[0.25em] font-medium">
+      <a href="/lumicron/" class="hover-target nav-link transition-colors hover:text-[var(--color-brand-primary)]">Home</a>
+      <a href="/lumicron/portfolio" class="hover-target nav-link transition-colors hover:text-[var(--color-brand-primary)]">Portfolio</a>
+      <a href="/lumicron/albums" class="hover-target nav-link transition-colors hover:text-[var(--color-brand-primary)]">Albums</a>
+      <a href="/lumicron/about" class="hover-target nav-link transition-colors hover:text-[var(--color-brand-primary)]">About</a>
+      <a href="/lumicron/contact" class="hover-target nav-link transition-colors hover:text-[var(--color-brand-primary)]">Contact</a>
+    </nav>
+
+    <!-- Theme & Mobile Toggle -->
+    <div class="flex items-center space-x-4">
+      <ThemeToggle />
+      <button id="mobile-menu-btn" class="md:hidden hover-target p-2 text-[var(--text-color)]">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="fixed inset-0 bg-[var(--bg-color)] z-[40] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <button id="mobile-menu-close" class="absolute top-6 right-6 p-2 text-[var(--text-color)]">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    <nav class="flex flex-col items-center space-y-8 text-2xl uppercase tracking-[0.2em] font-light">
+      <a href="/lumicron/" class="mobile-link hover:text-[var(--color-brand-primary)] transition-colors">Home</a>
+      <a href="/lumicron/portfolio" class="mobile-link hover:text-[var(--color-brand-primary)] transition-colors">Portfolio</a>
+      <a href="/lumicron/albums" class="mobile-link hover:text-[var(--color-brand-primary)] transition-colors">Albums</a>
+      <a href="/lumicron/about" class="mobile-link hover:text-[var(--color-brand-primary)] transition-colors">About</a>
+      <a href="/lumicron/contact" class="mobile-link hover:text-[var(--color-brand-primary)] transition-colors">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileClose = document.getElementById('mobile-menu-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar?.classList.add('backdrop-blur-xl', 'bg-[var(--bg-color)]/80', 'shadow-lg', 'shadow-black/5', 'py-3');
+        navbar?.classList.remove('bg-transparent', 'py-5');
+      } else {
+        navbar?.classList.add('bg-transparent', 'py-5');
+        navbar?.classList.remove('backdrop-blur-xl', 'bg-[var(--bg-color)]/80', 'shadow-lg', 'shadow-black/5', 'py-3');
+      }
+    });
+
+    const toggleMenu = () => {
+      if (mobileMenu?.classList.contains('opacity-0')) {
+        mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+      }
+    };
+
+    mobileBtn?.addEventListener('click', toggleMenu);
+    mobileClose?.addEventListener('click', toggleMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+  }
+
+  document.addEventListener('DOMContentLoaded', initNavbar);
+  document.addEventListener('astro:page-load', initNavbar);
+</script>

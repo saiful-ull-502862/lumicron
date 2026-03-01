@@ -1,0 +1,78 @@
+---
+// src/pages/blog/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="Stories">
+  <div class="pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto min-h-screen">
+    
+    <div class="text-center mb-20" data-aos="fade-down">
+      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">Stories & Thoughts</h1>
+      <p class="text-[var(--text-muted)] tracking-wide font-light">
+        Behind the scenes of road trips, gear reviews, and photography guides.
+      </p>
+    </div>
+
+    {posts.length === 0 ? (
+      <div class="text-center py-20 text-[var(--text-muted)] font-light italic border border-dashed border-[var(--border-color)]">
+        No stories published yet. Check back soon.
+      </div>
+    ) : (
+      <div class="space-y-16">
+        {posts.map((post, index) => (
+          <article class="group relative" data-aos="fade-up" data-aos-delay={index * 100}>
+            <a href={`/lumicron/blog/${post.slug}`} class="block hover-target">
+              <div class="flex flex-col md:flex-row gap-8 items-center">
+                
+                {post.data.coverImage && (
+                  <div class="w-full md:w-5/12 aspect-[4/3] overflow-hidden bg-[var(--bg-secondary)]">
+                    <img 
+                      src={post.data.coverImage.src} 
+                      alt={post.data.title}
+                      class="w-full h-full object-cover filter brightness-90 group-hover:brightness-110 group-hover:scale-105 transition-all duration-700"
+                    />
+                  </div>
+                )}
+                
+                <div class={`w-full ${post.data.coverImage ? 'md:w-7/12' : ''}`}>
+                  <div class="flex items-center gap-3 mb-4 text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-brand-accent)]">
+                    <time datetime={post.data.pubDate.toISOString()}>
+                      {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </time>
+                    {post.data.tags.length > 0 && (
+                      <>
+                        <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+                        <span class="text-[var(--text-muted)]">{post.data.tags[0]}</span>
+                      </>
+                    )}
+                  </div>
+                  
+                  <h2 class="text-3xl font-serif italic text-[var(--text-color)] group-hover:text-[var(--color-brand-primary)] transition-colors duration-300 mb-4">
+                    {post.data.title}
+                  </h2>
+                  
+                  <p class="text-[var(--text-muted)] font-light leading-relaxed mb-6">
+                    {post.data.description}
+                  </p>
+                  
+                  <span class="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-[var(--text-color)] border-b border-[var(--color-brand-primary)] pb-1 transition-all group-hover:pl-2 group-hover:border-[var(--color-brand-accent)] group-hover:text-[var(--color-brand-accent)]">
+                    Read Story
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </span>
+                </div>
+                
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    )}
+
+  </div>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+// src/components/LoadingScreen.astro
+---
+<div id="loading-screen" class="fixed inset-0 z-[10000] bg-[var(--bg-color)] flex items-center justify-center transition-opacity duration-1000 ease-in-out">
+  <div class="logo-container transform scale-75 opacity-0 animate-logo-reveal">
+    <img src="/lumicron/logo/lumicron-logo.svg" alt="Lumicron Logo" class="w-64 md:w-80 h-auto filter dark:invert-0 invert" />
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 1000);
+      }, 1500); // Wait 1.5s then fade out
+    }
+  });
+</script>
+
+<style>
+  @keyframes logoReveal {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+      filter: blur(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0);
+    }
+  }
+  .animate-logo-reveal {
+    animation: logoReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

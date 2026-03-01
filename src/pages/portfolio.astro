@@ -1,0 +1,80 @@
+---
+// src/pages/portfolio.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CategoryFilter from '../components/CategoryFilter.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { getAlbums, getGlobalAlbumImage } from '../utils/content';
+import { Image } from 'astro:assets';
+
+// Gather all photos from all albums
+const albums = await getAlbums();
+let allPhotos: any[] = [];
+
+for (const album of albums) {
+  for (const photo of album.photos) {
+    const imgData = await getGlobalAlbumImage(album.slug, photo.file);
+    if (imgData) {
+      allPhotos.push({
+        ...photo,
+        albumTitle: album.title,
+        categories: album.categories.join(','),
+        imgData
+      });
+    }
+  }
+}
+
+// Shuffle slightly for a better masonry look or sort by date/featured if preferred.
+// Here we just use the order they were processed (album by album).
+---
+
+<BaseLayout title="Portfolio">
+  <div class="pt-32 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto min-h-screen">
+    <div class="text-center mb-16" data-aos="fade-down">
+      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">Portfolio</h1>
+      <p class="text-[var(--text-muted)] max-w-2xl mx-auto tracking-wide">
+        A curated collection of portraits, events, and the quiet moments in between.
+      </p>
+    </div>
+
+    <CategoryFilter />
+
+    <!-- Masonry Grid -->
+    <div id="pswp-gallery" class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+      {allPhotos.map((photo, index) => (
+        <div 
+          class="gallery-item break-inside-avoid mb-6 relative group overflow-hidden bg-[var(--bg-secondary)] transition-all duration-300 ease-in-out"
+          data-categories={photo.categories}
+          data-aos="fade-up"
+          data-aos-delay={index % 4 * 100}
+        >
+          <a 
+            href={photo.imgData.src} 
+            data-pswp-width={photo.imgData.width} 
+            data-pswp-height={photo.imgData.height} 
+            class="pswp-item block w-full hover-target"
+            target="_blank"
+          >
+            <!-- Using standard img tag with Astro optimization due to dynamic masonry height requirements.
+                 Astro Image component is great but sometimes fights with CSS columns, so we set format and width -->
+            <Image 
+              src={photo.imgData} 
+              alt={photo.caption || photo.albumTitle}
+              width={800}
+              class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            
+            <!-- Hover Overlay -->
+            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+              <span class="text-[var(--color-brand-accent)] text-xs uppercase tracking-widest mb-1">{photo.albumTitle}</span>
+              <p class="text-white text-sm font-light">{photo.caption}</p>
+            </div>
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <Lightbox />
+</BaseLayout>

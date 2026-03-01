@@ -1,0 +1,241 @@
+backend:
+  name: github
+  repo: saiful-ull-502862/lumicron
+  branch: main
+
+site_url: https://saiful-ull-502862.github.io/lumicron
+display_url: https://saiful-ull-502862.github.io/lumicron
+
+media_folder: "content/albums"
+public_folder: "/lumicron/content/albums"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  # ── Albums ──
+  - name: "albums"
+    label: "Albums"
+    label_singular: "Album"
+    folder: "content/albums"
+    path: "{{slug}}/_album"
+    format: "json"
+    extension: "json"
+    create: true
+    delete: true
+    identifier_field: "slug"
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}}"
+    media_folder: ""
+    public_folder: ""
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        required: true
+
+      - label: "Slug"
+        name: "slug"
+        widget: "string"
+        required: true
+        hint: "URL-friendly name (lowercase, hyphens only). Example: birthday-photoshoot"
+        pattern:
+          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          - "Lowercase letters, numbers, and hyphens only"
+
+      - label: "Date"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        required: true
+
+      - label: "Location"
+        name: "location"
+        widget: "string"
+        default: "Studio"
+        required: true
+
+      - label: "Categories"
+        name: "categories"
+        widget: "select"
+        multiple: true
+        min: 1
+        options:
+          - { label: "Portraits", value: "portraits" }
+          - { label: "Events", value: "events" }
+          - { label: "Cultural", value: "cultural" }
+        required: true
+
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        required: true
+
+      - label: "Cover Photo Filename"
+        name: "cover"
+        widget: "string"
+        required: true
+        hint: "Filename of the cover photo (e.g. _DSC6098.jpg). Must match a file in the photos list."
+
+      - label: "Photos"
+        name: "photos"
+        widget: "list"
+        summary: "{{fields.file}} — {{fields.caption}}"
+        allow_add: true
+        collapsed: true
+        fields:
+          - label: "Photo"
+            name: "file"
+            widget: "image"
+            required: true
+
+          - label: "Caption"
+            name: "caption"
+            widget: "string"
+            default: ""
+
+          - label: "Featured"
+            name: "featured"
+            widget: "boolean"
+            default: false
+            required: false
+
+  # ── Site Settings ──
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - name: "site-config"
+        label: "Site Configuration"
+        file: "content/site-config.json"
+        format: "json"
+        fields:
+          - label: "Site Name"
+            name: "siteName"
+            widget: "string"
+            required: true
+
+          - label: "Tagline"
+            name: "tagline"
+            widget: "string"
+            required: true
+
+          - label: "Author"
+            name: "author"
+            widget: "string"
+            required: true
+
+          - label: "Site URL"
+            name: "url"
+            widget: "string"
+            required: true
+
+          - label: "Logo Path"
+            name: "logo"
+            widget: "string"
+            required: true
+            hint: "Example: /logo/lumicron-logo.svg"
+
+          - label: "Social Links"
+            name: "socialLinks"
+            widget: "object"
+            collapsed: false
+            fields:
+              - label: "Instagram"
+                name: "instagram"
+                widget: "string"
+                required: false
+                default: ""
+
+              - label: "Flickr"
+                name: "flickr"
+                widget: "string"
+                required: false
+                default: ""
+
+              - label: "Twitter"
+                name: "twitter"
+                widget: "string"
+                required: false
+                default: ""
+
+          - label: "Contact Email"
+            name: "contactEmail"
+            widget: "string"
+            required: true
+
+  # ── Categories ──
+  - name: "categories-config"
+    label: "Categories"
+    files:
+      - name: "categories"
+        label: "Photo Categories"
+        file: "content/categories.json"
+        format: "json"
+        fields:
+          - label: "Categories"
+            name: "categories"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+
+              - label: "Slug"
+                name: "slug"
+                widget: "string"
+                required: true
+                pattern:
+                  - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                  - "Lowercase letters, numbers, and hyphens only"
+
+              - label: "Cover Image Path"
+                name: "cover"
+                widget: "string"
+                required: true
+                hint: "Relative path like albums/saree-shoot/_DSC8231.jpg"
+
+  # ── Featured Images ──
+  - name: "featured-config"
+    label: "Featured Images"
+    files:
+      - name: "featured"
+        label: "Featured Photos"
+        file: "content/featured.json"
+        format: "json"
+        fields:
+          - label: "Featured Images"
+            name: "featured"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.albumSlug}})"
+            fields:
+              - label: "Album Slug"
+                name: "albumSlug"
+                widget: "string"
+                required: true
+                hint: "Slug of the album containing this photo"
+
+              - label: "Photo Filename"
+                name: "file"
+                widget: "string"
+                required: true
+                hint: "Filename (e.g. _DSC6098.jpg)"
+
+              - label: "Title"
+                name: "title"
+                widget: "string"
+                required: true
+
+              - label: "Category"
+                name: "category"
+                widget: "select"
+                options:
+                  - { label: "Portraits", value: "portraits" }
+                  - { label: "Events", value: "events" }
+                  - { label: "Cultural", value: "cultural" }
+                required: true
