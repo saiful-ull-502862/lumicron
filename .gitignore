@@ -25,6 +25,7 @@ Thumbs.db
 npm-debug.log*
 .claude/
 vigorous-visual/
+oauth-worker/
 
 # Album photos — ignore all, then whitelist samples
 content/albums/**/*.jpg

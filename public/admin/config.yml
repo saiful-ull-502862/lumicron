@@ -2,6 +2,7 @@ backend:
   name: github
   repo: saiful-ull-502862/lumicron
   branch: main
+  base_url: https://lumicron-auth.saiful-islam131459.workers.dev
 
 site_url: https://saiful-ull-502862.github.io/lumicron
 display_url: https://saiful-ull-502862.github.io/lumicron
