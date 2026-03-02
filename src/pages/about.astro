@@ -3,6 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import profileImg from '../assets/profile.jpg';
+import juiImg from '../assets/jui.jpg';
 ---
 
 <BaseLayout title="About">
@@ -38,11 +39,38 @@ import profileImg from '../assets/profile.jpg';
         <div class="mt-10 pt-10 border-t border-[var(--border-color)]">
           <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-[var(--text-color)] mb-4">Current Gear</h3>
           <ul class="space-y-2 text-[var(--text-muted)] font-mono text-sm">
-            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Camera Body</span> <span>Sony A7IV</span></li>
-            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Primary Lens</span> <span>24-70mm f/2.8 GM</span></li>
-            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Portrait Lens</span> <span>85mm f/1.4 GM</span></li>
-            <li class="flex justify-between pb-2"><span>Flash</span> <span>Godox V1</span></li>
+            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Camera Body</span> <span>Sony A6400</span></li>
+            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Primary Lens</span> <span>Sony 18-135mm f/3.5-5.6 OSS</span></li>
+            <li class="flex justify-between pb-2"><span>Portrait Lens</span> <span>Sigma 56mm f/1.4</span></li>
           </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row-reverse gap-16 items-center mb-32" data-aos="fade-up">
+      <div class="w-full md:w-1/2">
+        <div class="aspect-square bg-[var(--bg-secondary)] relative overflow-hidden group">
+          <Image src={juiImg} alt="Jui — Creative Director" width={800} class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+
+          <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--bg-color)] to-transparent opacity-60"></div>
+
+          <div class="absolute top-8 left-8 bottom-8 right-8 border border-[var(--color-brand-accent)]/30 scale-105 group-hover:scale-100 transition-transform duration-700 pointer-events-none"></div>
+        </div>
+      </div>
+
+      <div class="w-full md:w-1/2">
+        <h2 class="text-4xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-6">Jui</h2>
+        <p class="text-xl text-[var(--color-brand-accent)] font-light tracking-wide mb-6 uppercase">
+          Creative Director
+        </p>
+
+        <div class="space-y-4 text-[var(--text-muted)] font-light leading-relaxed">
+          <p>
+            Every frame needs a story, and Jui is the one who writes it before the shutter clicks. As the creative director behind Lumicron, she orchestrates every pose, every angle, and every emotion you see in our work.
+          </p>
+          <p>
+            The vision you see in these photos — that's her eye at work.
+          </p>
         </div>
       </div>
     </div>
