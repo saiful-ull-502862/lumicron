@@ -121,6 +121,27 @@ import '../styles/global.css';
         t.style.opacity = '1'; t.style.transform = 'translate(-50%, 0)'; t.style.pointerEvents = 'auto';
         clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, ms);
       }
+      // Full-size photo viewer (lightbox) with prev/next + Esc/click-to-close.
+      function openLightbox(srcs, index) {
+        srcs = (srcs || []).filter(Boolean); if (!srcs.length) return;
+        let i = Math.max(0, Math.min(index || 0, srcs.length - 1));
+        const ov = el('div', 'fixed inset-0 z-[300] bg-black/95 grid place-items-center');
+        const img = el('img', 'max-w-[92vw] max-h-[88vh] object-contain select-none'); img.src = srcs[i];
+        const counter = el('div', 'absolute top-4 left-1/2 -translate-x-1/2 text-white/70 text-sm', `${i + 1} / ${srcs.length}`);
+        const close = el('button', 'absolute top-3 right-5 text-white text-3xl leading-none', '✕');
+        const prev = el('button', 'absolute left-3 top-1/2 -translate-y-1/2 text-white text-4xl px-3 py-2 hover:opacity-70', '‹');
+        const next = el('button', 'absolute right-3 top-1/2 -translate-y-1/2 text-white text-4xl px-3 py-2 hover:opacity-70', '›');
+        const show = (n) => { i = (n + srcs.length) % srcs.length; img.src = srcs[i]; counter.textContent = `${i + 1} / ${srcs.length}`; };
+        const onKey = (e) => { if (e.key === 'Escape') cleanup(); else if (e.key === 'ArrowLeft') show(i - 1); else if (e.key === 'ArrowRight') show(i + 1); };
+        const cleanup = () => { document.removeEventListener('keydown', onKey); ov.remove(); };
+        prev.onclick = (e) => { e.stopPropagation(); show(i - 1); };
+        next.onclick = (e) => { e.stopPropagation(); show(i + 1); };
+        close.onclick = cleanup;
+        ov.onclick = (e) => { if (e.target === ov) cleanup(); };
+        document.addEventListener('keydown', onKey);
+        if (srcs.length < 2) { prev.style.display = next.style.display = counter.style.display = 'none'; }
+        ov.append(img, counter, close, prev, next); document.body.appendChild(ov);
+      }
       function b64ToUtf8(b64) { return decodeURIComponent(escape(atob(b64.replace(/\s/g, '')))); }
       function utf8ToB64(str) { return btoa(unescape(encodeURIComponent(str))); }
       function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
@@ -360,6 +381,12 @@ import '../styles/global.css';
           if (a.cover === p.file && a.photos[0]) a.cover = a.photos[0].file;
           markDirty(a); renderEditor(); renderSidebar();
         };
+        card.style.cursor = 'zoom-in';
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return; // let action buttons do their thing
+          const srcs = a.photos.map(ph => ph._url || `${RAW}/content/albums/${a.slug}/${ph.file}`);
+          openLightbox(srcs, a.photos.indexOf(p));
+        });
         return card;
       }
       const eye = () => '<svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -616,7 +643,10 @@ import '../styles/global.css';
           const row = el('div', 'flex justify-between items-center');
           const chg = el('button', 'text-[11px] uppercase tracking-wider text-[var(--color-brand-accent)]', 'Change'); chg.onclick = () => openPicker(sel => { f.albumSlug = sel.albumSlug; f.file = sel.file; const al = albums.find(a => a.slug === sel.albumSlug); if (al && al.categories && al.categories[0]) f.category = al.categories[0]; markFeatured(); renderHome(); });
           const rm = el('button', 'text-[11px] uppercase tracking-wider text-red-400', 'Remove'); rm.onclick = () => { featured.splice(i, 1); markFeatured(); renderHome(); };
-          row.append(chg, rm); body.appendChild(row); card.appendChild(body); grid.appendChild(card);
+          row.append(chg, rm); body.appendChild(row); card.appendChild(body);
+          const imgDiv = card.querySelector('div'); imgDiv.style.cursor = 'zoom-in';
+          imgDiv.addEventListener('click', () => openLightbox(featured.map(x => `${RAW}/content/albums/${x.albumSlug}/${x.file}`), i));
+          grid.appendChild(card);
         });
         sec.appendChild(grid);
         sec.appendChild(el('p', 'text-xs text-[var(--text-muted)] mt-3', 'Drag cards to reorder. These show in the “Featured Collections” grid on your home page.'));
@@ -643,7 +673,9 @@ import '../styles/global.css';
           card.innerHTML = `<img src="${p._url || `${RAW}/content/albums/${a.slug}/${p.file}`}" loading="lazy" class="w-full h-full object-cover">
             <span class="absolute top-1 left-1 text-[9px] uppercase tracking-wider bg-black/60 text-white px-1 rounded-sm">${a.title || a.slug}</span>
             <button title="Remove from Portfolio" class="absolute bottom-1 right-1 w-7 h-7 grid place-items-center rounded bg-black/60 text-yellow-300 opacity-0 group-hover:opacity-100 hover:bg-black">★</button>`;
-          card.querySelector('button').onclick = () => { p.featured = false; markDirty(a); renderPortfolio(); };
+          card.querySelector('button').onclick = (e) => { e.stopPropagation(); p.featured = false; markDirty(a); renderPortfolio(); };
+          card.style.cursor = 'zoom-in';
+          card.addEventListener('click', (e) => { if (e.target.closest('button')) return; const srcs = items.map(it => it.p._url || `${RAW}/content/albums/${it.a.slug}/${it.p.file}`); openLightbox(srcs, items.findIndex(it => it.p === p)); });
           grid.appendChild(card);
         });
         wrap.appendChild(grid);
