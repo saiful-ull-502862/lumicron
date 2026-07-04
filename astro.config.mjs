@@ -12,7 +12,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Keep the private curation tool out of the sitemap.
-      filter: (page) => !page.includes('/review'),
+      filter: (page) => !page.includes('/review') && !page.includes('/manage'),
     }),
   ],
 });

@@ -1,0 +1,453 @@
+---
+// src/pages/manage.astro
+// Lumicron Manager — a custom, visual admin for photos & albums.
+// Private tool: noindex, unlisted, excluded from sitemap. All editing requires
+// GitHub login (via the existing OAuth worker); changes commit to the repo and
+// the site auto-deploys. Nothing here is usable by public visitors.
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Lumicron Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style is:global>
+      .mgr-drop { outline: 2px dashed var(--color-brand-accent); outline-offset: -6px; }
+      .mgr-dragging { opacity: 0.4; }
+      .mgr-photo.discarded img { filter: grayscale(0.85); opacity: 0.35; }
+      .mgr-photo.discarded { outline: 2px solid #b34a4a; outline-offset: -2px; }
+      .mgr-spin { animation: mgrspin 0.8s linear infinite; }
+      @keyframes mgrspin { to { transform: rotate(360deg); } }
+      .mgr-toast { transition: opacity .3s, transform .3s; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[var(--bg-color)] text-[var(--text-color)]">
+    <!-- Top bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-color)]/90 border-b border-[var(--border-color)] px-5 py-3">
+      <div class="max-w-[1500px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-serif italic text-[var(--color-brand-primary)]">Lumicron</span>
+          <span class="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">Manager</span>
+        </div>
+        <div class="flex items-center gap-3 text-xs">
+          <span id="pending" class="text-[var(--color-brand-accent)]"></span>
+          <span id="whoami" class="text-[var(--text-muted)]"></span>
+          <a href="/lumicron/" class="hidden sm:inline text-[var(--text-muted)] hover:text-[var(--text-color)] uppercase tracking-widest">View site</a>
+          <button id="saveBtn" class="hidden px-4 py-2 bg-[var(--color-brand-primary)] text-white uppercase tracking-widest hover:opacity-90 transition disabled:opacity-40">Save &amp; Publish</button>
+          <button id="logoutBtn" class="hidden px-3 py-2 border border-[var(--border-color)] text-[var(--text-muted)] uppercase tracking-widest hover:text-[var(--text-color)] transition">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Login screen -->
+    <section id="loginView" class="max-w-md mx-auto px-6 py-24 text-center">
+      <h1 class="text-3xl font-serif italic text-[var(--color-brand-primary)] mb-4">Welcome back</h1>
+      <p class="text-[var(--text-muted)] mb-8 leading-relaxed text-sm">
+        Sign in with GitHub to manage your photos and albums. Only accounts with access to your
+        repository can make changes — this page does nothing for anyone else.
+      </p>
+      <button id="loginBtn" class="inline-flex items-center gap-3 px-6 py-3 bg-[var(--text-color)] text-[var(--bg-color)] uppercase tracking-widest text-sm hover:bg-[var(--color-brand-primary)] hover:text-white transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5 18 5.3 18 5.3c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        Sign in with GitHub
+      </button>
+      <p id="loginErr" class="text-red-400 text-xs mt-6"></p>
+    </section>
+
+    <!-- App -->
+    <main id="appView" class="hidden max-w-[1500px] mx-auto px-4 py-6">
+      <div id="loading" class="text-center text-[var(--text-muted)] py-24">Loading your albums…</div>
+      <div id="app" class="hidden grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+        <!-- Sidebar: albums -->
+        <aside class="lg:sticky lg:top-20 self-start">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">Albums</h2>
+            <button id="newAlbumBtn" class="text-xs px-2 py-1 border border-[var(--border-color)] hover:text-[var(--color-brand-primary)] transition">+ New</button>
+          </div>
+          <div id="albumList" class="space-y-1.5"></div>
+        </aside>
+
+        <!-- Editor -->
+        <section id="editor" class="min-h-[60vh]"></section>
+      </div>
+    </main>
+
+    <div id="toast" class="mgr-toast fixed bottom-6 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none px-5 py-3 rounded bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm shadow-xl z-[100]"></div>
+
+    <script is:inline>
+      // ---------- config ----------
+      const REPO = 'saiful-ull-502862/lumicron';
+      const BRANCH = 'main';
+      const WORKER = 'https://lumicron-auth.saiful-islam131459.workers.dev';
+      const API = 'https://api.github.com';
+      const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
+      const TOKEN_KEY = 'lumicron-gh-token';
+      const CATEGORIES = [
+        { label: 'Portraits', value: 'portraits' },
+        { label: 'Couples', value: 'couples' },
+        { label: 'Maternity', value: 'maternity' },
+        { label: 'Events', value: 'events' },
+        { label: 'Cultural', value: 'cultural' },
+      ];
+      const MAX_EDGE = 2400, JPEG_Q = 0.82;
+
+      // ---------- state ----------
+      let token = sessionStorage.getItem(TOKEN_KEY) || '';
+      let albums = [];        // {slug, title, date, location, categories[], description, cover, photos[], _new?, _deleted?}
+      let activeSlug = null;
+      const deletedAlbumFiles = {}; // slug -> [paths] to remove on save
+
+      // ---------- helpers ----------
+      const $ = (id) => document.getElementById(id);
+      const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+      function toast(msg, ms = 2600) {
+        const t = $('toast'); t.textContent = msg;
+        t.style.opacity = '1'; t.style.transform = 'translate(-50%, 0)'; t.style.pointerEvents = 'auto';
+        clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, ms);
+      }
+      function b64ToUtf8(b64) { return decodeURIComponent(escape(atob(b64.replace(/\s/g, '')))); }
+      function utf8ToB64(str) { return btoa(unescape(encodeURIComponent(str))); }
+      function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+      function markDirty(a) { if (a) a._dirty = true; updatePending(); }
+      function anyDirty() { return albums.some(a => a._dirty || a._new || a._deleted) || Object.keys(deletedAlbumFiles).length; }
+      function updatePending() {
+        const n = albums.filter(a => a._dirty || a._new).length + albums.filter(a => a._deleted).length;
+        $('pending').textContent = anyDirty() ? `${n} album${n === 1 ? '' : 's'} with unsaved changes` : '';
+        $('saveBtn').disabled = !anyDirty();
+      }
+
+      async function gh(path, opts = {}) {
+        const res = await fetch(path.startsWith('http') ? path : API + path, {
+          ...opts,
+          headers: {
+            'Authorization': 'token ' + token,
+            'Accept': 'application/vnd.github+json',
+            ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
+            ...(opts.headers || {}),
+          },
+        });
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`GitHub ${res.status}: ${txt.slice(0, 200)}`);
+        }
+        return res.status === 204 ? null : res.json();
+      }
+
+      // ---------- auth ----------
+      function login() {
+        $('loginErr').textContent = '';
+        const w = window.open(`${WORKER}/auth?provider=github&scope=repo&site_id=${location.host}`, 'lumicron-oauth', 'width=640,height=760');
+        if (!w) { $('loginErr').textContent = 'Popup blocked — allow popups for this site and try again.'; return; }
+        function onMsg(e) {
+          const d = e.data;
+          if (typeof d !== 'string') return;
+          if (d === 'authorizing:github') { w.postMessage('', e.origin); return; }
+          if (d.indexOf('authorization:github:success:') === 0) {
+            try {
+              const payload = JSON.parse(d.substring('authorization:github:success:'.length));
+              token = payload.token;
+              sessionStorage.setItem(TOKEN_KEY, token);
+              window.removeEventListener('message', onMsg);
+              try { w.close(); } catch (_) {}
+              boot();
+            } catch (err) { $('loginErr').textContent = 'Login failed: ' + err.message; }
+          }
+          if (d.indexOf('authorization:github:error:') === 0) {
+            $('loginErr').textContent = 'GitHub denied the login. Please try again.';
+            window.removeEventListener('message', onMsg);
+          }
+        }
+        window.addEventListener('message', onMsg);
+      }
+      function logout() { token = ''; sessionStorage.removeItem(TOKEN_KEY); location.reload(); }
+
+      // ---------- load ----------
+      async function boot() {
+        $('loginView').classList.add('hidden');
+        $('appView').classList.remove('hidden');
+        $('saveBtn').classList.remove('hidden');
+        $('logoutBtn').classList.remove('hidden');
+        try {
+          const me = await gh('/user');
+          $('whoami').textContent = '@' + me.login;
+        } catch (err) {
+          // bad/expired token
+          sessionStorage.removeItem(TOKEN_KEY); token = '';
+          $('appView').classList.add('hidden'); $('loginView').classList.remove('hidden');
+          $('saveBtn').classList.add('hidden'); $('logoutBtn').classList.add('hidden');
+          $('loginErr').textContent = 'Session expired — please sign in again.';
+          return;
+        }
+        await loadAlbums();
+      }
+
+      async function loadAlbums() {
+        $('loading').classList.remove('hidden'); $('app').classList.add('hidden');
+        albums = [];
+        try {
+          const dirs = await gh(`/repos/${REPO}/contents/content/albums?ref=${BRANCH}`);
+          const albumDirs = dirs.filter(d => d.type === 'dir');
+          for (const d of albumDirs) {
+            try {
+              const meta = await gh(`/repos/${REPO}/contents/content/albums/${d.name}/_album.json?ref=${BRANCH}`);
+              const json = JSON.parse(b64ToUtf8(meta.content));
+              json.photos = (json.photos || []).map(p => ({ published: p.published !== false, featured: !!p.featured, caption: p.caption || '', file: p.file }));
+              json.slug = json.slug || d.name;
+              albums.push(json);
+            } catch (e) { console.warn('skip', d.name, e); }
+          }
+          albums.sort((a, b) => new Date(b.date) - new Date(a.date));
+          activeSlug = albums[0] ? albums[0].slug : null;
+          renderSidebar(); renderEditor();
+          $('loading').classList.add('hidden'); $('app').classList.remove('hidden');
+        } catch (err) {
+          $('loading').innerHTML = `<p class="text-red-400">Couldn't load albums: ${err.message}</p>`;
+        }
+        updatePending();
+      }
+
+      // ---------- render sidebar ----------
+      function renderSidebar() {
+        const list = $('albumList'); list.innerHTML = '';
+        albums.filter(a => !a._deleted).forEach(a => {
+          const active = a.slug === activeSlug;
+          const btn = el('button',
+            `w-full text-left px-3 py-2 rounded flex items-center justify-between gap-2 transition ${active ? 'bg-[var(--bg-secondary)] text-[var(--text-color)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-secondary)]/60'}`);
+          const shown = a.photos.filter(p => p.published).length;
+          btn.innerHTML = `<span class="truncate"><span class="block text-sm">${a.title || a.slug}</span>
+            <span class="block text-[10px] uppercase tracking-wider opacity-70">${shown}/${a.photos.length} shown${a._dirty || a._new ? ' • edited' : ''}</span></span>`;
+          btn.onclick = () => { activeSlug = a.slug; renderSidebar(); renderEditor(); };
+          list.appendChild(btn);
+        });
+      }
+
+      // ---------- render editor ----------
+      function renderEditor() {
+        const wrap = $('editor'); wrap.innerHTML = '';
+        const a = albums.find(x => x.slug === activeSlug && !x._deleted);
+        if (!a) { wrap.innerHTML = '<p class="text-[var(--text-muted)] py-20 text-center">Select or create an album.</p>'; return; }
+
+        // ----- meta panel -----
+        const meta = el('div', 'mb-6 border border-[var(--border-color)] rounded p-4 md:p-5');
+        meta.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="block"><span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Title</span>
+              <input data-f="title" class="w-full bg-transparent border-b border-[var(--border-color)] py-1.5 focus:outline-none focus:border-[var(--color-brand-primary)]" value="${escapeAttr(a.title || '')}"></label>
+            <label class="block"><span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Date</span>
+              <input data-f="date" type="date" class="w-full bg-transparent border-b border-[var(--border-color)] py-1.5 focus:outline-none focus:border-[var(--color-brand-primary)]" value="${escapeAttr(a.date || '')}"></label>
+            <label class="block"><span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Location</span>
+              <input data-f="location" class="w-full bg-transparent border-b border-[var(--border-color)] py-1.5 focus:outline-none focus:border-[var(--color-brand-primary)]" value="${escapeAttr(a.location || '')}"></label>
+            <div><span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Categories</span>
+              <div id="catBox" class="flex flex-wrap gap-2"></div></div>
+            <label class="block md:col-span-2"><span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Description</span>
+              <textarea data-f="description" rows="2" class="w-full bg-transparent border-b border-[var(--border-color)] py-1.5 focus:outline-none focus:border-[var(--color-brand-primary)] resize-none">${escapeHtml(a.description || '')}</textarea></label>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 mt-4">
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-[var(--color-brand-accent)] text-black text-xs uppercase tracking-widest cursor-pointer hover:opacity-90">
+              + Add photos <input id="uploadInput" type="file" accept="image/*" multiple class="hidden"></label>
+            <button id="delAlbumBtn" class="px-3 py-2 border border-red-500/50 text-red-400 text-xs uppercase tracking-widest hover:bg-red-500/10">Delete album</button>
+            <span class="text-xs text-[var(--text-muted)]">Drag photos to reorder • click the eye to hide from the site</span>
+          </div>`;
+        wrap.appendChild(meta);
+
+        meta.querySelectorAll('[data-f]').forEach(inp => {
+          inp.addEventListener('input', () => { a[inp.dataset.f] = inp.value; markDirty(a); if (inp.dataset.f === 'title') renderSidebar(); });
+        });
+        const catBox = meta.querySelector('#catBox');
+        CATEGORIES.forEach(c => {
+          const on = (a.categories || []).includes(c.value);
+          const chip = el('button', `px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider border transition ${on ? 'bg-[var(--color-brand-primary)] text-white border-[var(--color-brand-primary)]' : 'border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-color)]'}`, c.label);
+          chip.onclick = () => {
+            a.categories = a.categories || [];
+            const i = a.categories.indexOf(c.value);
+            if (i >= 0) a.categories.splice(i, 1); else a.categories.push(c.value);
+            markDirty(a); renderEditor();
+          };
+          catBox.appendChild(chip);
+        });
+        meta.querySelector('#uploadInput').addEventListener('change', (e) => handleUpload(a, e.target.files));
+        meta.querySelector('#delAlbumBtn').onclick = () => deleteAlbum(a);
+
+        // ----- photo grid -----
+        const grid = el('div', 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2');
+        a.photos.forEach((p, idx) => grid.appendChild(photoCard(a, p, idx)));
+        wrap.appendChild(grid);
+        enableDragReorder(grid, a);
+      }
+
+      function photoCard(a, p, idx) {
+        const card = el('div', `mgr-photo group relative aspect-square overflow-hidden bg-[var(--bg-secondary)] ${p.published ? '' : 'discarded'}`);
+        card.draggable = true; card.dataset.idx = idx;
+        const src = p._url || `${RAW}/content/albums/${a.slug}/${p.file}`;
+        card.innerHTML = `
+          <img src="${src}" alt="" loading="lazy" class="w-full h-full object-cover pointer-events-none">
+          ${a.cover === p.file ? '<span class="absolute top-1 left-1 text-[9px] uppercase tracking-wider bg-[var(--color-brand-primary)] text-white px-1 rounded-sm">Cover</span>' : ''}
+          ${p.featured ? '<span class="absolute top-1 right-1 text-[10px]">★</span>' : ''}
+          <div class="absolute inset-x-0 bottom-0 flex justify-center gap-1 p-1 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition">
+            <button title="Show/Hide" data-a="pub" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-black">${p.published ? eye() : eyeOff()}</button>
+            <button title="Feature in Portfolio" data-a="feat" class="w-7 h-7 grid place-items-center rounded bg-black/60 ${p.featured ? 'text-yellow-300' : 'text-white'} hover:bg-black">★</button>
+            <button title="Set as cover" data-a="cover" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-black">◎</button>
+            <button title="Delete" data-a="del" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-red-600">🗑</button>
+          </div>`;
+        card.querySelector('[data-a="pub"]').onclick = () => { p.published = !p.published; markDirty(a); renderEditor(); renderSidebar(); };
+        card.querySelector('[data-a="feat"]').onclick = () => { p.featured = !p.featured; markDirty(a); renderEditor(); };
+        card.querySelector('[data-a="cover"]').onclick = () => { a.cover = p.file; markDirty(a); renderEditor(); };
+        card.querySelector('[data-a="del"]').onclick = () => {
+          if (!confirm('Remove this photo from the album? (applies when you Save & Publish)')) return;
+          if (!p._new) { deletedAlbumFiles[a.slug] = deletedAlbumFiles[a.slug] || []; deletedAlbumFiles[a.slug].push(`content/albums/${a.slug}/${p.file}`); }
+          const i = a.photos.indexOf(p); a.photos.splice(i, 1);
+          if (a.cover === p.file && a.photos[0]) a.cover = a.photos[0].file;
+          markDirty(a); renderEditor(); renderSidebar();
+        };
+        return card;
+      }
+      const eye = () => '<svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+      const eyeOff = () => '<svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></svg>';
+
+      // ---------- drag reorder ----------
+      function enableDragReorder(grid, a) {
+        let dragIdx = null;
+        grid.querySelectorAll('.mgr-photo').forEach(card => {
+          card.addEventListener('dragstart', () => { dragIdx = +card.dataset.idx; card.classList.add('mgr-dragging'); });
+          card.addEventListener('dragend', () => { card.classList.remove('mgr-dragging'); grid.querySelectorAll('.mgr-drop').forEach(c => c.classList.remove('mgr-drop')); });
+          card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('mgr-drop'); });
+          card.addEventListener('dragleave', () => card.classList.remove('mgr-drop'));
+          card.addEventListener('drop', (e) => {
+            e.preventDefault(); card.classList.remove('mgr-drop');
+            const dropIdx = +card.dataset.idx;
+            if (dragIdx == null || dragIdx === dropIdx) return;
+            const [m] = a.photos.splice(dragIdx, 1); a.photos.splice(dropIdx, 0, m);
+            markDirty(a); renderEditor();
+          });
+        });
+      }
+
+      // ---------- uploads (resize client-side) ----------
+      async function handleUpload(a, fileList) {
+        const files = Array.from(fileList); if (!files.length) return;
+        toast(`Processing ${files.length} photo${files.length === 1 ? '' : 's'}…`, 4000);
+        for (const f of files) {
+          if (!f.type.startsWith('image/')) continue;
+          try {
+            const { base64, dataUrl } = await resizeImage(f);
+            let name = f.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]+/g, '_') + '.jpg';
+            const existing = new Set(a.photos.map(p => p.file));
+            let n = name, i = 1; while (existing.has(n)) n = name.replace('.jpg', `_${i++}.jpg`);
+            a.photos.push({ file: n, caption: '', featured: false, published: true, _new: true, _base64: base64, _url: dataUrl });
+            if (!a.cover) a.cover = n;
+          } catch (err) { toast('Skipped one image: ' + err.message); }
+        }
+        markDirty(a); renderEditor(); renderSidebar();
+        toast('Photos added — click Save & Publish when ready.');
+      }
+
+      async function resizeImage(file) {
+        const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }).catch(() => createImageBitmap(file));
+        let { width, height } = bmp;
+        const scale = Math.min(1, MAX_EDGE / Math.max(width, height));
+        width = Math.round(width * scale); height = Math.round(height * scale);
+        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(bmp, 0, 0, width, height);
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', JPEG_Q));
+        const dataUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(blob); });
+        return { base64: dataUrl.split(',')[1], dataUrl };
+      }
+
+      // ---------- new / delete album ----------
+      function newAlbum() {
+        const title = prompt('Album title?'); if (!title) return;
+        let slug = slugify(title); if (!slug) return;
+        if (albums.some(a => a.slug === slug)) slug += '-' + Date.now().toString().slice(-4);
+        const a = { slug, title, date: new Date().toISOString().slice(0, 10), location: 'Studio', categories: ['events'], description: '', cover: '', photos: [], _new: true, _dirty: true };
+        albums.unshift(a); activeSlug = slug; renderSidebar(); renderEditor(); updatePending();
+        toast('Album created — add photos, then Save & Publish.');
+      }
+      function deleteAlbum(a) {
+        if (!confirm(`Delete the entire "${a.title}" album? This removes it and its photos when you Save & Publish.`)) return;
+        if (!a._new) {
+          deletedAlbumFiles[a.slug] = deletedAlbumFiles[a.slug] || [];
+          deletedAlbumFiles[a.slug].push(`content/albums/${a.slug}/_album.json`);
+          a.photos.forEach(p => { if (!p._new) deletedAlbumFiles[a.slug].push(`content/albums/${a.slug}/${p.file}`); });
+          a._deleted = true;
+        } else {
+          albums = albums.filter(x => x !== a);
+        }
+        activeSlug = (albums.find(x => !x._deleted) || {}).slug || null;
+        renderSidebar(); renderEditor(); updatePending();
+      }
+
+      // ---------- save & publish (single commit via Git Data API) ----------
+      async function save() {
+        if (!anyDirty()) return;
+        const btn = $('saveBtn'); const original = btn.textContent;
+        btn.disabled = true; btn.innerHTML = '<span class="mgr-spin inline-block">◠</span> Publishing…';
+        try {
+          const refData = await gh(`/repos/${REPO}/git/ref/heads/${BRANCH}`);
+          const baseSha = refData.object.sha;
+          const baseCommit = await gh(`/repos/${REPO}/git/commits/${baseSha}`);
+          const baseTree = baseCommit.tree.sha;
+          const tree = [];
+
+          // deletions (photos + whole albums)
+          for (const slug in deletedAlbumFiles) {
+            for (const path of deletedAlbumFiles[slug]) tree.push({ path, mode: '100644', type: 'blob', sha: null });
+          }
+          // additions / updates
+          for (const a of albums) {
+            if (a._deleted) continue;
+            if (!(a._dirty || a._new)) continue;
+            // new image blobs
+            for (const p of a.photos) {
+              if (p._new && p._base64) {
+                const blob = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: p._base64, encoding: 'base64' }) });
+                tree.push({ path: `content/albums/${a.slug}/${p.file}`, mode: '100644', type: 'blob', sha: blob.sha });
+              }
+            }
+            // _album.json
+            const json = {
+              title: a.title || a.slug, slug: a.slug, date: a.date || new Date().toISOString().slice(0, 10),
+              location: a.location || '', categories: a.categories && a.categories.length ? a.categories : ['events'],
+              description: a.description || '', cover: a.cover || (a.photos[0] ? a.photos[0].file : ''),
+              photos: a.photos.map(p => ({ file: p.file, caption: p.caption || '', featured: !!p.featured, published: p.published !== false })),
+            };
+            const jblob = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: utf8ToB64(JSON.stringify(json, null, 2)), encoding: 'base64' }) });
+            tree.push({ path: `content/albums/${a.slug}/_album.json`, mode: '100644', type: 'blob', sha: jblob.sha });
+          }
+
+          if (!tree.length) { toast('Nothing to publish.'); btn.disabled = false; btn.textContent = original; return; }
+
+          const newTree = await gh(`/repos/${REPO}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: baseTree, tree }) });
+          const commit = await gh(`/repos/${REPO}/git/commits`, { method: 'POST', body: JSON.stringify({ message: 'Update albums via Lumicron Manager', tree: newTree.sha, parents: [baseSha] }) });
+          await gh(`/repos/${REPO}/git/refs/heads/${BRANCH}`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) });
+
+          // clear dirty state
+          albums = albums.filter(a => !a._deleted);
+          albums.forEach(a => { a._dirty = false; a._new = false; a.photos.forEach(p => { delete p._new; delete p._base64; }); });
+          for (const k in deletedAlbumFiles) delete deletedAlbumFiles[k];
+          renderSidebar(); renderEditor(); updatePending();
+          btn.textContent = original; btn.disabled = false;
+          toast('✓ Published! Your site rebuilds and updates in ~1–2 minutes.', 6000);
+        } catch (err) {
+          btn.textContent = original; btn.disabled = false; updatePending();
+          toast('Publish failed: ' + err.message, 7000);
+          console.error(err);
+        }
+      }
+
+      // ---------- misc ----------
+      function escapeHtml(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+      function escapeAttr(s) { return String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+      $('loginBtn').onclick = login;
+      $('logoutBtn').onclick = logout;
+      $('saveBtn').onclick = save;
+      $('newAlbumBtn').onclick = newAlbum;
+      window.addEventListener('beforeunload', (e) => { if (anyDirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+      if (token) boot();
+    </script>
+  </body>
+</html>
