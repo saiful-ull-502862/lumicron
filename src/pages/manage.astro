@@ -59,7 +59,12 @@ import '../styles/global.css';
 
     <!-- App -->
     <main id="appView" class="hidden max-w-[1500px] mx-auto px-4 py-6">
-      <div id="loading" class="text-center text-[var(--text-muted)] py-24">Loading your albums…</div>
+      <div id="tabs" class="hidden flex gap-1 mb-5 border-b border-[var(--border-color)]">
+        <button id="tabAlbums" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-[var(--color-brand-primary)] text-[var(--text-color)]">Albums</button>
+        <button id="tabPages" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-transparent text-[var(--text-muted)] hover:text-[var(--text-color)]">Pages &amp; Site</button>
+      </div>
+      <div id="loading" class="text-center text-[var(--text-muted)] py-24">Loading…</div>
+      <section id="pagesView" class="hidden max-w-[900px] mx-auto space-y-8"></section>
       <div id="app" class="hidden grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
         <!-- Sidebar: albums -->
         <aside class="lg:sticky lg:top-20 self-start">
@@ -99,6 +104,9 @@ import '../styles/global.css';
       let albums = [];        // {slug, title, date, location, categories[], description, cover, photos[], _new?, _deleted?}
       let activeSlug = null;
       const deletedAlbumFiles = {}; // slug -> [paths] to remove on save
+      let siteConfig = null, pages = null;   // content/site-config.json, content/pages.json
+      let siteDirty = false, pagesDirty = false;
+      let view = 'albums';
 
       // ---------- helpers ----------
       const $ = (id) => document.getElementById(id);
@@ -112,10 +120,10 @@ import '../styles/global.css';
       function utf8ToB64(str) { return btoa(unescape(encodeURIComponent(str))); }
       function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
       function markDirty(a) { if (a) a._dirty = true; updatePending(); }
-      function anyDirty() { return albums.some(a => a._dirty || a._new || a._deleted) || Object.keys(deletedAlbumFiles).length; }
+      function anyDirty() { return albums.some(a => a._dirty || a._new || a._deleted) || Object.keys(deletedAlbumFiles).length || siteDirty || pagesDirty; }
       function updatePending() {
-        const n = albums.filter(a => a._dirty || a._new).length + albums.filter(a => a._deleted).length;
-        $('pending').textContent = anyDirty() ? `${n} album${n === 1 ? '' : 's'} with unsaved changes` : '';
+        const n = albums.filter(a => a._dirty || a._new).length + albums.filter(a => a._deleted).length + (siteDirty ? 1 : 0) + (pagesDirty ? 1 : 0);
+        $('pending').textContent = anyDirty() ? `${n} unsaved change${n === 1 ? '' : 's'}` : '';
         $('saveBtn').disabled = !anyDirty();
       }
 
@@ -182,6 +190,37 @@ import '../styles/global.css';
           return;
         }
         await loadAlbums();
+        await loadSiteContent();
+        $('tabs').classList.remove('hidden');
+      }
+
+      async function loadSiteContent() {
+        try {
+          const sc = await gh(`/repos/${REPO}/contents/content/site-config.json?ref=${BRANCH}`);
+          siteConfig = JSON.parse(b64ToUtf8(sc.content));
+        } catch (e) { siteConfig = siteConfig || { siteName: '', tagline: '', author: '', contactEmail: '', socialLinks: {} }; }
+        try {
+          const pg = await gh(`/repos/${REPO}/contents/content/pages.json?ref=${BRANCH}`);
+          pages = JSON.parse(b64ToUtf8(pg.content));
+        } catch (e) { pages = pages || {}; }
+        // ensure shape
+        pages.home = pages.home || {}; pages.portfolio = pages.portfolio || {};
+        pages.about = pages.about || {}; pages.contact = pages.contact || {};
+        pages.about.paragraphs = pages.about.paragraphs || [];
+        pages.about.gear = pages.about.gear || [];
+        pages.about.people = pages.about.people || [];
+        siteConfig.socialLinks = siteConfig.socialLinks || {};
+      }
+
+      function switchView(v) {
+        view = v;
+        const on = 'border-[var(--color-brand-primary)] text-[var(--text-color)]';
+        const off = 'border-transparent text-[var(--text-muted)]';
+        $('tabAlbums').className = `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${v === 'albums' ? on : off} hover:text-[var(--text-color)]`;
+        $('tabPages').className = `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${v === 'pages' ? on : off} hover:text-[var(--text-color)]`;
+        $('app').classList.toggle('hidden', v !== 'albums');
+        $('pagesView').classList.toggle('hidden', v !== 'pages');
+        if (v === 'pages') renderPages();
       }
 
       async function loadAlbums() {
@@ -379,6 +418,127 @@ import '../styles/global.css';
         renderSidebar(); renderEditor(); updatePending();
       }
 
+      // ---------- pages & site editor ----------
+      function markSite() { siteDirty = true; updatePending(); }
+      function markPages() { pagesDirty = true; updatePending(); }
+      function splitParas(v) { return v.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean); }
+
+      function pfield(label, value, oninput) {
+        const w = el('label', 'block'); w.innerHTML = `<span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">${label}</span>`;
+        const inp = el('input', 'w-full bg-transparent border-b border-[var(--border-color)] py-1.5 focus:outline-none focus:border-[var(--color-brand-primary)]');
+        inp.value = value || ''; inp.addEventListener('input', () => oninput(inp.value)); w.appendChild(inp); return w;
+      }
+      function ptext(label, value, oninput, rows = 2) {
+        const w = el('label', 'block'); w.innerHTML = `<span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">${label}</span>`;
+        const ta = el('textarea', 'w-full bg-transparent border border-[var(--border-color)] rounded p-2 focus:outline-none focus:border-[var(--color-brand-primary)] resize-y');
+        ta.rows = rows; ta.value = value || ''; ta.addEventListener('input', () => oninput(ta.value)); w.appendChild(ta); return w;
+      }
+      function psection(title, children) {
+        const s = el('div', 'border border-[var(--border-color)] rounded p-5');
+        s.appendChild(el('h2', 'text-lg font-serif italic text-[var(--color-brand-primary)] mb-4', title));
+        const g = el('div', 'grid grid-cols-1 gap-4'); children.forEach(c => c && g.appendChild(c)); s.appendChild(g); return s;
+      }
+      function pimage(label, ref, onpick) {
+        ref = ref || { albumSlug: '', file: '' };
+        const w = el('div', ''); w.innerHTML = `<span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">${label}</span>`;
+        const row = el('div', 'flex items-center gap-3');
+        const thumb = el('div', 'w-16 h-16 bg-[var(--bg-secondary)] overflow-hidden rounded shrink-0');
+        if (ref.albumSlug && ref.file) thumb.innerHTML = `<img src="${RAW}/content/albums/${ref.albumSlug}/${ref.file}" class="w-full h-full object-cover">`;
+        const pick = el('button', 'px-3 py-1.5 border border-[var(--border-color)] text-xs uppercase tracking-widest hover:text-[var(--color-brand-primary)]', ref.file ? 'Change' : 'Choose photo');
+        pick.onclick = () => openPicker(onpick);
+        row.appendChild(thumb); row.appendChild(pick);
+        if (ref.file) { const clr = el('button', 'px-3 py-1.5 border border-[var(--border-color)] text-xs uppercase tracking-widest text-[var(--text-muted)]', 'Reset'); clr.onclick = () => onpick({ albumSlug: '', file: '' }); row.appendChild(clr); }
+        w.appendChild(row); return w;
+      }
+      function openPicker(cb) {
+        const ov = el('div', 'fixed inset-0 z-[200] bg-black/85 overflow-auto p-6');
+        const close = el('button', 'fixed top-4 right-5 text-white text-2xl z-10', '✕'); close.onclick = () => ov.remove();
+        const box = el('div', 'max-w-[1000px] mx-auto');
+        box.appendChild(el('h3', 'text-lg font-serif italic text-[var(--color-brand-primary)] mb-4', 'Choose a photo'));
+        albums.filter(a => !a._deleted).forEach(a => {
+          box.appendChild(el('h4', 'text-xs uppercase tracking-widest text-[var(--text-muted)] mt-4 mb-2', a.title || a.slug));
+          const grid = el('div', 'grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5');
+          a.photos.forEach(p => {
+            const b = el('button', 'aspect-square overflow-hidden bg-[var(--bg-secondary)] hover:opacity-80');
+            b.innerHTML = `<img src="${p._url || `${RAW}/content/albums/${a.slug}/${p.file}`}" loading="lazy" class="w-full h-full object-cover">`;
+            b.onclick = () => { cb({ albumSlug: a.slug, file: p.file }); ov.remove(); };
+            grid.appendChild(b);
+          });
+          box.appendChild(grid);
+        });
+        ov.appendChild(close); ov.appendChild(box); document.body.appendChild(ov);
+      }
+      function pgear(ab) {
+        const w = el('div', ''); w.innerHTML = `<span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">Gear list</span>`;
+        const list = el('div', 'space-y-2');
+        ab.gear.forEach((g, i) => {
+          const row = el('div', 'flex gap-2 items-center');
+          const l = el('input', 'flex-1 bg-transparent border-b border-[var(--border-color)] py-1'); l.value = g.label || ''; l.placeholder = 'Label'; l.oninput = () => { g.label = l.value; markPages(); };
+          const v = el('input', 'flex-1 bg-transparent border-b border-[var(--border-color)] py-1'); v.value = g.value || ''; v.placeholder = 'Value'; v.oninput = () => { g.value = v.value; markPages(); };
+          const del = el('button', 'text-red-400 px-2', '✕'); del.onclick = () => { ab.gear.splice(i, 1); markPages(); renderPages(); };
+          row.append(l, v, del); list.appendChild(row);
+        });
+        const add = el('button', 'mt-2 text-xs uppercase tracking-widest text-[var(--color-brand-accent)]', '+ Add gear row');
+        add.onclick = () => { ab.gear.push({ label: '', value: '' }); markPages(); renderPages(); };
+        w.appendChild(list); w.appendChild(add); return w;
+      }
+      function ppeople(ab) {
+        const w = el('div', ''); w.innerHTML = `<span class="block text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">People (extra profiles shown below your bio)</span>`;
+        ab.people.forEach((person, i) => {
+          const card = el('div', 'border border-[var(--border-color)] rounded p-4 mb-3 space-y-3');
+          card.appendChild(pfield('Name', person.name, v => { person.name = v; markPages(); }));
+          card.appendChild(pfield('Role', person.role, v => { person.role = v; markPages(); }));
+          card.appendChild(pimage('Photo (optional)', person.image, ref => { person.image = ref; markPages(); renderPages(); }));
+          card.appendChild(ptext('Text (blank line between paragraphs)', (person.paragraphs || []).join('\n\n'), v => { person.paragraphs = splitParas(v); markPages(); }, 3));
+          const del = el('button', 'text-red-400 text-xs uppercase tracking-widest', 'Remove person');
+          del.onclick = () => { ab.people.splice(i, 1); markPages(); renderPages(); };
+          card.appendChild(del); w.appendChild(card);
+        });
+        const add = el('button', 'text-xs uppercase tracking-widest text-[var(--color-brand-accent)]', '+ Add person');
+        add.onclick = () => { ab.people.push({ name: '', role: '', image: { albumSlug: '', file: '' }, paragraphs: [] }); markPages(); renderPages(); };
+        w.appendChild(add); return w;
+      }
+
+      function renderPages() {
+        const wrap = $('pagesView'); wrap.innerHTML = '';
+        if (!pages || !siteConfig) { wrap.innerHTML = '<p class="text-[var(--text-muted)] py-10 text-center">Loading page content…</p>'; return; }
+        const sl = siteConfig.socialLinks;
+        wrap.appendChild(psection('Site settings', [
+          pfield('Site name', siteConfig.siteName, v => { siteConfig.siteName = v; markSite(); }),
+          pfield('Tagline (home hero + meta)', siteConfig.tagline, v => { siteConfig.tagline = v; markSite(); }),
+          pfield('Author (footer)', siteConfig.author, v => { siteConfig.author = v; markSite(); }),
+          pfield('Contact email', siteConfig.contactEmail, v => { siteConfig.contactEmail = v; markSite(); }),
+          pfield('Facebook URL', sl.facebook || '', v => { sl.facebook = v; markSite(); }),
+          pfield('Flickr URL', sl.flickr || '', v => { sl.flickr = v; markSite(); }),
+          pfield('Twitter URL', sl.twitter || '', v => { sl.twitter = v; markSite(); }),
+        ]));
+        const h = pages.home;
+        wrap.appendChild(psection('Home page', [
+          pimage('Hero background image', h.heroImage, ref => { h.heroImage = ref; markPages(); renderPages(); }),
+          pfield('Hero button text', h.ctaText, v => { h.ctaText = v; markPages(); }),
+          pfield('Featured section heading', h.featuredHeading, v => { h.featuredHeading = v; markPages(); }),
+        ]));
+        const p = pages.portfolio;
+        wrap.appendChild(psection('Portfolio page', [
+          pfield('Heading', p.heading, v => { p.heading = v; markPages(); }),
+          ptext('Subtitle', p.subtitle, v => { p.subtitle = v; markPages(); }),
+        ]));
+        const ab = pages.about;
+        wrap.appendChild(psection('About page', [
+          pfield('Heading', ab.heading, v => { ab.heading = v; markPages(); }),
+          pfield('Subheading', ab.subheading, v => { ab.subheading = v; markPages(); }),
+          pimage('Main photo (optional — overrides the built-in one)', ab.profileImage, ref => { ab.profileImage = ref; markPages(); renderPages(); }),
+          ptext('Bio (separate paragraphs with a blank line)', (ab.paragraphs || []).join('\n\n'), v => { ab.paragraphs = splitParas(v); markPages(); }, 5),
+          pgear(ab),
+          ppeople(ab),
+        ]));
+        const c = pages.contact;
+        wrap.appendChild(psection('Contact page', [
+          pfield('Heading', c.heading, v => { c.heading = v; markPages(); }),
+          ptext('Intro text', c.intro, v => { c.intro = v; markPages(); }),
+        ]));
+      }
+
       // ---------- save & publish (single commit via Git Data API) ----------
       async function save() {
         if (!anyDirty()) return;
@@ -417,6 +577,16 @@ import '../styles/global.css';
             tree.push({ path: `content/albums/${a.slug}/_album.json`, mode: '100644', type: 'blob', sha: jblob.sha });
           }
 
+          // site settings & page content
+          if (siteDirty && siteConfig) {
+            const b = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: utf8ToB64(JSON.stringify(siteConfig, null, 4)), encoding: 'base64' }) });
+            tree.push({ path: 'content/site-config.json', mode: '100644', type: 'blob', sha: b.sha });
+          }
+          if (pagesDirty && pages) {
+            const b = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: utf8ToB64(JSON.stringify(pages, null, 2)), encoding: 'base64' }) });
+            tree.push({ path: 'content/pages.json', mode: '100644', type: 'blob', sha: b.sha });
+          }
+
           if (!tree.length) { toast('Nothing to publish.'); btn.disabled = false; btn.textContent = original; return; }
 
           const newTree = await gh(`/repos/${REPO}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: baseTree, tree }) });
@@ -427,7 +597,8 @@ import '../styles/global.css';
           albums = albums.filter(a => !a._deleted);
           albums.forEach(a => { a._dirty = false; a._new = false; a.photos.forEach(p => { delete p._new; delete p._base64; }); });
           for (const k in deletedAlbumFiles) delete deletedAlbumFiles[k];
-          renderSidebar(); renderEditor(); updatePending();
+          siteDirty = false; pagesDirty = false;
+          renderSidebar(); renderEditor(); if (view === 'pages') renderPages(); updatePending();
           btn.textContent = original; btn.disabled = false;
           toast('✓ Published! Your site rebuilds and updates in ~1–2 minutes.', 6000);
         } catch (err) {
@@ -445,6 +616,8 @@ import '../styles/global.css';
       $('logoutBtn').onclick = logout;
       $('saveBtn').onclick = save;
       $('newAlbumBtn').onclick = newAlbum;
+      $('tabAlbums').onclick = () => switchView('albums');
+      $('tabPages').onclick = () => switchView('pages');
       window.addEventListener('beforeunload', (e) => { if (anyDirty()) { e.preventDefault(); e.returnValue = ''; } });
 
       if (token) boot();

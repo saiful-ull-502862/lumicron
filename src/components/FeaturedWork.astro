@@ -1,9 +1,10 @@
 ---
 // src/components/FeaturedWork.astro
-import { getFeaturedImages, getGlobalAlbumImage } from '../utils/content';
+import { getFeaturedImages, getGlobalAlbumImage, getPages } from '../utils/content';
 import { Image } from 'astro:assets';
 
 const featuredImages = await getFeaturedImages();
+const pages = await getPages();
 
 // Fetch unresolved images and resolve the actual astro img object
 const resolvedImages = await Promise.all(featuredImages.map(async (f) => {
@@ -17,7 +18,7 @@ const resolvedImages = await Promise.all(featuredImages.map(async (f) => {
 
 <section class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
   <div class="mb-16 text-center" data-aos="fade-up">
-    <h2 class="text-3xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-4">Featured Collections</h2>
+    <h2 class="text-3xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-4">{pages.home.featuredHeading}</h2>
     <div class="w-16 h-px bg-[var(--color-brand-accent)] mx-auto"></div>
   </div>
 

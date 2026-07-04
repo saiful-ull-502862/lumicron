@@ -2,78 +2,93 @@
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import { getPages, getGlobalAlbumImage } from '../utils/content';
 import profileImg from '../assets/profile.jpg';
 import juiImg from '../assets/jui.jpg';
+
+const about = (await getPages()).about;
+
+// Resolve the main portrait: use the chosen album photo if set, else the
+// bundled default so the page always has an image.
+let mainImg = profileImg;
+if (about.profileImage?.albumSlug && about.profileImage?.file) {
+  const r = await getGlobalAlbumImage(about.profileImage.albumSlug, about.profileImage.file);
+  if (r) mainImg = r;
+}
+
+const people = Array.isArray(about.people) ? about.people : [];
+const peopleImgs = await Promise.all(
+  people.map(async (p: any, i: number) => {
+    if (p.image?.albumSlug && p.image?.file) {
+      const r = await getGlobalAlbumImage(p.image.albumSlug, p.image.file);
+      if (r) return r;
+    }
+    return i === 0 ? juiImg : profileImg; // sensible fallbacks
+  })
+);
+
+const gear = Array.isArray(about.gear) ? about.gear : [];
+const bio = Array.isArray(about.paragraphs) ? about.paragraphs : [];
 ---
 
 <BaseLayout title="About">
   <div class="pt-32 pb-24 px-6 md:px-12 max-w-5xl mx-auto min-h-screen">
-    
+
     <div class="flex flex-col md:flex-row gap-16 items-center mb-32" data-aos="fade-up">
       <div class="w-full md:w-1/2">
         <div class="aspect-[3/4] bg-[var(--bg-secondary)] relative overflow-hidden group">
-          <Image src={profileImg} alt="Saiful — Photographer" width={800} class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
-
+          <Image src={mainImg} alt={about.subheading || 'Photographer'} width={800} class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
           <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--bg-color)] to-transparent opacity-60"></div>
-
-          <!-- Geometric border element -->
-          <div class="absolute top-8 left-8 bottom-8 right-8 border border-[var(--color-brand-accent)]/30 scale-105 group-hover:scale-100 transition-transform duration-700 pointer-events-none"></div>
-        </div>
-      </div>
-      
-      <div class="w-full md:w-1/2">
-        <h1 class="text-4xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-6">About Me</h1>
-        <p class="text-xl text-[var(--color-brand-accent)] font-light tracking-wide mb-6 uppercase">
-          The Eye Behind the Lens
-        </p>
-
-        <div class="space-y-4 text-[var(--text-muted)] font-light leading-relaxed">
-          <p>
-            I'm Saiful — a photographer based in Bangladesh with a quiet obsession for light, shadow, and the moments most people forget to notice. I shoot portraits, events, cultural gatherings, and everything in between.
-          </p>
-          <p>
-            Moody tones, deep contrasts, and honest frames — that's what I chase. No posing scripts, no forced smiles. Just the real thing.
-          </p>
-        </div>
-        
-        <div class="mt-10 pt-10 border-t border-[var(--border-color)]">
-          <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-[var(--text-color)] mb-4">Current Gear</h3>
-          <ul class="space-y-2 text-[var(--text-muted)] font-mono text-sm">
-            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Camera Body</span> <span>Sony A6400</span></li>
-            <li class="flex justify-between border-b border-[var(--border-color)]/50 pb-2"><span>Primary Lens</span> <span>Sony 18-135mm f/3.5-5.6 OSS</span></li>
-            <li class="flex justify-between pb-2"><span>Portrait Lens</span> <span>Sigma 56mm f/1.4</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col md:flex-row-reverse gap-16 items-center mb-32" data-aos="fade-up">
-      <div class="w-full md:w-1/2">
-        <div class="aspect-[3/4] bg-[var(--bg-secondary)] relative overflow-hidden group">
-          <Image src={juiImg} alt="Jui — Creative Director" width={800} class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
-
-          <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--bg-color)] to-transparent opacity-60"></div>
-
           <div class="absolute top-8 left-8 bottom-8 right-8 border border-[var(--color-brand-accent)]/30 scale-105 group-hover:scale-100 transition-transform duration-700 pointer-events-none"></div>
         </div>
       </div>
 
       <div class="w-full md:w-1/2">
-        <h2 class="text-4xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-6">Jui</h2>
+        <h1 class="text-4xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-6">{about.heading}</h1>
         <p class="text-xl text-[var(--color-brand-accent)] font-light tracking-wide mb-6 uppercase">
-          Creative Director
+          {about.subheading}
         </p>
 
         <div class="space-y-4 text-[var(--text-muted)] font-light leading-relaxed">
-          <p>
-            Every frame needs a story, and Jui is the one who writes it before the shutter clicks. As the creative director behind Lumicron, she orchestrates every pose, every angle, and every emotion you see in our work.
-          </p>
-          <p>
-            The vision you see in these photos — that's her eye at work.
-          </p>
+          {bio.map((para: string) => <p>{para}</p>)}
         </div>
+
+        {gear.length > 0 && (
+          <div class="mt-10 pt-10 border-t border-[var(--border-color)]">
+            <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-[var(--text-color)] mb-4">Current Gear</h3>
+            <ul class="space-y-2 text-[var(--text-muted)] font-mono text-sm">
+              {gear.map((g: any, i: number) => (
+                <li class={`flex justify-between ${i < gear.length - 1 ? 'border-b border-[var(--border-color)]/50' : ''} pb-2`}>
+                  <span>{g.label}</span> <span>{g.value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
+
+    {people.map((person: any, i: number) => (
+      <div class={`flex flex-col ${i % 2 === 0 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-16 items-center mb-32`} data-aos="fade-up">
+        <div class="w-full md:w-1/2">
+          <div class="aspect-[3/4] bg-[var(--bg-secondary)] relative overflow-hidden group">
+            <Image src={peopleImgs[i]} alt={person.name} width={800} class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--bg-color)] to-transparent opacity-60"></div>
+            <div class="absolute top-8 left-8 bottom-8 right-8 border border-[var(--color-brand-accent)]/30 scale-105 group-hover:scale-100 transition-transform duration-700 pointer-events-none"></div>
+          </div>
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <h2 class="text-4xl md:text-5xl font-serif italic text-[var(--color-brand-primary)] mb-6">{person.name}</h2>
+          {person.role && (
+            <p class="text-xl text-[var(--color-brand-accent)] font-light tracking-wide mb-6 uppercase">{person.role}</p>
+          )}
+          <div class="space-y-4 text-[var(--text-muted)] font-light leading-relaxed">
+            {(person.paragraphs || []).map((para: string) => <p>{para}</p>)}
+          </div>
+        </div>
+      </div>
+    ))}
 
   </div>
 </BaseLayout>

@@ -1,11 +1,18 @@
 ---
 // src/components/HeroSection.astro
-import { getSiteConfig } from '../utils/content';
+import { getSiteConfig, getPages, getGlobalAlbumImage } from '../utils/content';
 import { Image } from 'astro:assets';
 const siteConfig = await getSiteConfig();
+const pages = await getPages();
+const home = pages.home;
 
-// A default featured background image
-import heroBg from '../../content/albums/couples/_DSC3081.jpg';
+// Static fallback so the build never breaks if the chosen file is missing.
+import heroFallback from '../../content/albums/couples/_DSC3081.jpg';
+let heroBg = heroFallback;
+if (home.heroImage?.albumSlug && home.heroImage?.file) {
+  const resolved = await getGlobalAlbumImage(home.heroImage.albumSlug, home.heroImage.file);
+  if (resolved) heroBg = resolved;
+}
 ---
 
 <section class="hero-container relative h-screen w-full overflow-hidden flex items-center justify-center -mt-[88px]">
@@ -25,7 +32,7 @@ import heroBg from '../../content/albums/couples/_DSC3081.jpg';
     
     <div class="mt-12">
       <a href="/lumicron/portfolio" class="hover-target inline-block px-8 py-4 border border-[var(--color-brand-accent)] text-[var(--color-brand-text)] uppercase tracking-widest text-sm hover:bg-[var(--color-brand-accent)] hover:text-[#0A0A0B] transition-colors duration-300">
-        Explore Portfolio
+        {home.ctaText}
       </a>
     </div>
   </div>

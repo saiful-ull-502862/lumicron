@@ -1,0 +1,40 @@
+{
+  "home": {
+    "heroImage": { "albumSlug": "couples", "file": "_DSC3081.jpg" },
+    "ctaText": "Explore Portfolio",
+    "featuredHeading": "Featured Collections"
+  },
+  "portfolio": {
+    "heading": "Portfolio",
+    "subtitle": "A curated collection of portraits, events, and the quiet moments in between."
+  },
+  "about": {
+    "heading": "About Me",
+    "subheading": "The Eye Behind the Lens",
+    "paragraphs": [
+      "I'm Saiful — a photographer based in Bangladesh with a quiet obsession for light, shadow, and the moments most people forget to notice. I shoot portraits, events, cultural gatherings, and everything in between.",
+      "Moody tones, deep contrasts, and honest frames — that's what I chase. No posing scripts, no forced smiles. Just the real thing."
+    ],
+    "profileImage": { "albumSlug": "", "file": "" },
+    "gear": [
+      { "label": "Camera Body", "value": "Sony A6400" },
+      { "label": "Primary Lens", "value": "Sony 18-135mm f/3.5-5.6 OSS" },
+      { "label": "Portrait Lens", "value": "Sigma 56mm f/1.4" }
+    ],
+    "people": [
+      {
+        "name": "Jui",
+        "role": "Creative Director",
+        "image": { "albumSlug": "", "file": "" },
+        "paragraphs": [
+          "Every frame needs a story, and Jui is the one who writes it before the shutter clicks. As the creative director behind Lumicron, she orchestrates every pose, every angle, and every emotion you see in our work.",
+          "The vision you see in these photos — that's her eye at work."
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "heading": "Let's Connect",
+    "intro": "Whether you need coverage for an event, a portrait session, or just want to discuss a collaboration, I'd love to hear from you."
+  }
+}

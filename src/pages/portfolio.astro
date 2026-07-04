@@ -3,8 +3,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CategoryFilter from '../components/CategoryFilter.astro';
 import Lightbox from '../components/Lightbox.astro';
-import { getAlbums, getGlobalAlbumImage, isPublished } from '../utils/content';
+import { getAlbums, getGlobalAlbumImage, isPublished, getPages } from '../utils/content';
 import { Image } from 'astro:assets';
+
+const pages = await getPages();
 
 // The Portfolio is a curated highlight reel: only photos flagged `featured`
 // (and still published) appear here. Full sets live on each album page.
@@ -31,9 +33,9 @@ for (const album of albums) {
 <BaseLayout title="Portfolio">
   <div class="pt-32 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto min-h-screen">
     <div class="text-center mb-16" data-aos="fade-down">
-      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">Portfolio</h1>
+      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">{pages.portfolio.heading}</h1>
       <p class="text-[var(--text-muted)] max-w-2xl mx-auto tracking-wide">
-        A curated collection of portraits, events, and the quiet moments in between.
+        {pages.portfolio.subtitle}
       </p>
     </div>
 

@@ -50,6 +50,49 @@ export async function getSiteConfig() {
     return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 }
 
+// Editable text/config for the static pages (Home, Portfolio, About, Contact).
+// Falls back to sensible defaults if the file is missing or malformed so the
+// build never breaks.
+const PAGE_DEFAULTS = {
+    home: {
+        heroImage: { albumSlug: 'couples', file: '_DSC3081.jpg' },
+        ctaText: 'Explore Portfolio',
+        featuredHeading: 'Featured Collections',
+    },
+    portfolio: {
+        heading: 'Portfolio',
+        subtitle: 'A curated collection of portraits, events, and the quiet moments in between.',
+    },
+    about: {
+        heading: 'About Me',
+        subheading: 'The Eye Behind the Lens',
+        paragraphs: [] as string[],
+        profileImage: { albumSlug: '', file: '' },
+        gear: [] as { label: string; value: string }[],
+        people: [] as any[],
+    },
+    contact: {
+        heading: "Let's Connect",
+        intro: '',
+    },
+};
+
+export async function getPages(): Promise<any> {
+    const p = path.join(basePath, 'content', 'pages.json');
+    if (!fs.existsSync(p)) return PAGE_DEFAULTS;
+    try {
+        const raw = JSON.parse(fs.readFileSync(p, 'utf-8'));
+        return {
+            home: { ...PAGE_DEFAULTS.home, ...(raw.home || {}) },
+            portfolio: { ...PAGE_DEFAULTS.portfolio, ...(raw.portfolio || {}) },
+            about: { ...PAGE_DEFAULTS.about, ...(raw.about || {}) },
+            contact: { ...PAGE_DEFAULTS.contact, ...(raw.contact || {}) },
+        };
+    } catch {
+        return PAGE_DEFAULTS;
+    }
+}
+
 export async function getCategories(): Promise<Category[]> {
     const categoriesPath = path.join(basePath, 'content', 'categories.json');
     const raw = JSON.parse(fs.readFileSync(categoriesPath, 'utf-8'));

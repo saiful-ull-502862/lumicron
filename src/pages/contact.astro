@@ -1,19 +1,20 @@
 ---
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getSiteConfig } from '../utils/content';
+import { getSiteConfig, getPages } from '../utils/content';
 
 const siteConfig = await getSiteConfig();
 const contactEmail = siteConfig.contactEmail;
+const contact = (await getPages()).contact;
 ---
 
 <BaseLayout title="Contact">
   <div class="pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto min-h-screen">
     
     <div class="text-center mb-16" data-aos="fade-down">
-      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">Let's Connect</h1>
+      <h1 class="text-4xl md:text-6xl font-serif italic text-[var(--color-brand-primary)] mb-6">{contact.heading}</h1>
       <p class="text-[var(--text-muted)] max-w-xl mx-auto tracking-wide font-light leading-relaxed">
-        Whether you need coverage for an event, a portrait session, or just want to discuss a collaboration, I'd love to hear from you.
+        {contact.intro}
       </p>
       <a href={`mailto:${contactEmail}`} class="inline-block mt-6 text-[var(--color-brand-primary)] hover:text-[var(--color-brand-accent)] transition-colors tracking-widest text-sm uppercase">
         {contactEmail}
