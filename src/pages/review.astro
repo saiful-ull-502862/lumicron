@@ -1,0 +1,243 @@
+---
+// src/pages/review.astro
+// PRIVATE curation tool (keep / discard). Not linked in the nav and marked
+// noindex so it won't be crawled. Public visitors never see this page in
+// navigation, and any photo you "discard" here disappears from the public site
+// once you save the exported _album.json and push (or toggle it in the CMS).
+import '../styles/global.css';
+import { getAlbums, getGlobalAlbumImage } from '../utils/content';
+import { Image } from 'astro:assets';
+
+const albums = await getAlbums();
+
+// Resolve thumbnails for EVERY photo (published or not).
+const data = await Promise.all(
+  albums.map(async (album) => {
+    const photos = await Promise.all(
+      album.photos.map(async (p) => ({
+        file: p.file,
+        caption: p.caption ?? '',
+        featured: !!p.featured,
+        published: p.published !== false,
+        imgData: await getGlobalAlbumImage(album.slug, p.file),
+      }))
+    );
+    return { ...album, photos };
+  })
+);
+
+// Serializable copy (no image module objects) for the client exporter.
+const albumsMeta = data.map((a) => ({
+  title: a.title,
+  slug: a.slug,
+  date: a.date,
+  location: a.location,
+  categories: a.categories,
+  description: a.description,
+  cover: a.cover,
+  photos: a.photos.map((p) => ({
+    file: p.file,
+    caption: p.caption,
+    featured: p.featured,
+    published: p.published,
+  })),
+}));
+
+const totalPhotos = data.reduce((n, a) => n + a.photos.length, 0);
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Review &amp; Curate — Private</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-[var(--bg-color)] text-[var(--text-color)]">
+    <!-- Sticky toolbar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-color)]/85 border-b border-[var(--border-color)] px-5 py-4">
+      <div class="max-w-[1500px] mx-auto flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-serif italic text-[var(--color-brand-primary)]">Review &amp; Curate</h1>
+          <p class="text-xs text-[var(--text-muted)] tracking-wide">
+            Private tool · {totalPhotos} photos · click a photo to keep / discard
+          </p>
+        </div>
+        <div class="flex items-center gap-3 text-xs">
+          <span id="summary" class="text-[var(--text-muted)]"></span>
+          <button id="download-all" class="px-4 py-2 bg-[var(--color-brand-primary)] text-white uppercase tracking-widest hover:opacity-90 transition">Download changed albums</button>
+          <button id="reset" class="px-3 py-2 border border-[var(--border-color)] text-[var(--text-muted)] uppercase tracking-widest hover:text-[var(--text-color)] transition">Reset</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-[1500px] mx-auto px-5 py-8">
+      <p class="text-sm text-[var(--text-muted)] mb-8 leading-relaxed max-w-3xl">
+        Discarded photos turn dim and red. Nothing changes on your live site until you click
+        <strong>Download changed albums</strong>, drop the downloaded <code>_album.json</code> file(s)
+        into the matching <code>content/albums/&lt;album&gt;/</code> folder, and push to GitHub — or just
+        hand the files back to me and I'll apply them. Your choices are remembered in this browser.
+      </p>
+
+      {data.map((album) => (
+        <section class="mb-16" data-album={album.slug}>
+          <div class="flex items-baseline justify-between border-b border-[var(--border-color)] pb-3 mb-5">
+            <h2 class="text-2xl font-serif italic text-[var(--text-color)]">
+              {album.title}
+              <span class="text-sm not-italic font-sans text-[var(--text-muted)] ml-3">{album.photos.length} photos</span>
+            </h2>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="album-count text-[var(--text-muted)]" data-slug={album.slug}></span>
+              <button class="keep-all px-3 py-1.5 border border-[var(--border-color)] text-[var(--text-muted)] uppercase tracking-widest hover:text-[var(--text-color)] transition" data-slug={album.slug}>Keep all</button>
+              <button class="download-one px-3 py-1.5 border border-[var(--color-brand-accent)] text-[var(--color-brand-accent)] uppercase tracking-widest hover:bg-[var(--color-brand-accent)] hover:text-black transition" data-slug={album.slug}>Download</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {album.photos.map((p) => (
+              p.imgData && (
+                <button
+                  type="button"
+                  class="review-item group relative aspect-square overflow-hidden bg-[var(--bg-secondary)] cursor-pointer"
+                  data-slug={album.slug}
+                  data-file={p.file}
+                  data-default-published={p.published ? '1' : '0'}
+                >
+                  <Image
+                    src={p.imgData}
+                    alt={p.file}
+                    width={400}
+                    class="w-full h-full object-cover transition duration-300"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="state-badge absolute top-1.5 left-1.5 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm font-semibold"></span>
+                  <span class="absolute bottom-1 right-1.5 text-[9px] text-white/70 font-mono bg-black/40 px-1 rounded-sm">{p.file}</span>
+                </button>
+              )
+            ))}
+          </div>
+        </section>
+      ))}
+    </main>
+
+    <script define:vars={{ albumsMeta }}>
+      const STORE = 'lumicron-review-v1';
+      const key = (slug, file) => `${slug}::${file}`;
+      let decisions = {};
+      try { decisions = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (e) { decisions = {}; }
+
+      function isKept(slug, file, def) {
+        const k = key(slug, file);
+        if (k in decisions) return decisions[k] === 'keep';
+        return def; // fall back to current published flag
+      }
+      function setDecision(slug, file, kept) {
+        decisions[key(slug, file)] = kept ? 'keep' : 'discard';
+        localStorage.setItem(STORE, JSON.stringify(decisions));
+      }
+
+      function paint(el) {
+        const slug = el.dataset.slug, file = el.dataset.file;
+        const def = el.dataset.defaultPublished === '1';
+        const kept = isKept(slug, file, def);
+        const badge = el.querySelector('.state-badge');
+        const img = el.querySelector('img');
+        if (kept) {
+          el.style.outline = '2px solid transparent';
+          img.style.filter = 'none';
+          img.style.opacity = '1';
+          badge.textContent = 'Keep';
+          badge.style.background = 'rgba(123,142,143,0.9)';
+          badge.style.color = '#0b0b0b';
+        } else {
+          el.style.outline = '2px solid #b34a4a';
+          el.style.outlineOffset = '-2px';
+          img.style.filter = 'grayscale(0.8)';
+          img.style.opacity = '0.35';
+          badge.textContent = 'Discard';
+          badge.style.background = '#b34a4a';
+          badge.style.color = '#fff';
+        }
+      }
+
+      function updateCounts() {
+        let totalDiscard = 0, totalKeep = 0;
+        albumsMeta.forEach((a) => {
+          let keep = 0, discard = 0;
+          a.photos.forEach((p) => {
+            (isKept(a.slug, p.file, p.published) ? keep++ : discard++);
+          });
+          totalKeep += keep; totalDiscard += discard;
+          const c = document.querySelector(`.album-count[data-slug="${a.slug}"]`);
+          if (c) c.textContent = `${keep} keep · ${discard} discard`;
+        });
+        document.getElementById('summary').textContent = `${totalKeep} keep · ${totalDiscard} discard`;
+      }
+
+      const items = Array.from(document.querySelectorAll('.review-item'));
+      items.forEach((el) => {
+        paint(el);
+        el.addEventListener('click', () => {
+          const def = el.dataset.defaultPublished === '1';
+          const kept = isKept(el.dataset.slug, el.dataset.file, def);
+          setDecision(el.dataset.slug, el.dataset.file, !kept);
+          paint(el);
+          updateCounts();
+        });
+      });
+      updateCounts();
+
+      function buildAlbumJson(a) {
+        const out = {
+          title: a.title, slug: a.slug, date: a.date, location: a.location,
+          categories: a.categories, description: a.description, cover: a.cover,
+          photos: a.photos.map((p) => ({
+            file: p.file,
+            caption: p.caption,
+            featured: p.featured,
+            published: isKept(a.slug, p.file, p.published),
+          })),
+        };
+        return JSON.stringify(out, null, 2);
+      }
+      function albumChanged(a) {
+        return a.photos.some((p) => isKept(a.slug, p.file, p.published) !== p.published);
+      }
+      function download(name, text) {
+        const blob = new Blob([text], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url; link.download = name; link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.querySelectorAll('.download-one').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const a = albumsMeta.find((x) => x.slug === btn.dataset.slug);
+          download(`${a.slug}__album.json`, buildAlbumJson(a));
+        });
+      });
+      document.querySelectorAll('.keep-all').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const a = albumsMeta.find((x) => x.slug === btn.dataset.slug);
+          a.photos.forEach((p) => setDecision(a.slug, p.file, true));
+          items.filter((el) => el.dataset.slug === a.slug).forEach(paint);
+          updateCounts();
+        });
+      });
+      document.getElementById('download-all').addEventListener('click', () => {
+        const changed = albumsMeta.filter(albumChanged);
+        if (!changed.length) { alert('No changes yet — nothing to download.'); return; }
+        changed.forEach((a) => download(`${a.slug}__album.json`, buildAlbumJson(a)));
+      });
+      document.getElementById('reset').addEventListener('click', () => {
+        if (!confirm('Clear all keep/discard choices in this browser?')) return;
+        decisions = {}; localStorage.removeItem(STORE);
+        items.forEach(paint); updateCounts();
+      });
+    </script>
+  </body>
+</html>

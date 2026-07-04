@@ -1,28 +1,40 @@
 {
   "featured": [
     {
-      "albumSlug": "birthday-photoshoot",
-      "file": "_DSC6098.jpg",
-      "title": "BirthDay Photoshoot",
+      "albumSlug": "graduation-ceremony",
+      "file": "_DSC0360.jpg",
+      "title": "Graduation Ceremony",
       "category": "events"
     },
     {
-      "albumSlug": "saree-shoot",
-      "file": "_DSC8231.jpg",
-      "title": "Photoshoot in Saree",
-      "category": "portraits"
+      "albumSlug": "couples",
+      "file": "_DSC3081.jpg",
+      "title": "Couples",
+      "category": "couples"
     },
     {
-      "albumSlug": "pitha-uthsob",
-      "file": "_DSC6373.jpg",
-      "title": "Pitha Uthsob",
+      "albumSlug": "maternity",
+      "file": "_DSC7823.jpg",
+      "title": "Mom To Be",
+      "category": "maternity"
+    },
+    {
+      "albumSlug": "pohela-boishakh",
+      "file": "_DSC4499.jpg",
+      "title": "Pohela Boishakh",
       "category": "cultural"
     },
     {
-      "albumSlug": "graduation-photoshoot",
-      "file": "_DSC6465.jpg",
-      "title": "Graduation Photoshoot",
+      "albumSlug": "birthday",
+      "file": "_DSC6141.jpg",
+      "title": "Birthday Celebration",
       "category": "events"
+    },
+    {
+      "albumSlug": "snow-day",
+      "file": "_DSC3808.jpg",
+      "title": "Snow Day",
+      "category": "portraits"
     }
   ]
 }

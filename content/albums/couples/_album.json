@@ -1,0 +1,80 @@
+{
+  "title": "Couples",
+  "slug": "couples",
+  "date": "2025-02-14",
+  "location": "On Location",
+  "categories": [
+    "couples",
+    "portraits"
+  ],
+  "description": "Two people, one frame \u2014 unguarded closeness and the glances words can't hold.",
+  "cover": "_DSC3081.jpg",
+  "photos": [
+    {
+      "file": "_DSC3081.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3083.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3086.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3090.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC4408.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC4649.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC5209.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC5453.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC5534.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC5552.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC5603.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    }
+  ]
+}

@@ -3,19 +3,22 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CategoryFilter from '../components/CategoryFilter.astro';
 import Lightbox from '../components/Lightbox.astro';
-import { getAlbums, getGlobalAlbumImage } from '../utils/content';
+import { getAlbums, getGlobalAlbumImage, isPublished } from '../utils/content';
 import { Image } from 'astro:assets';
 
-// Gather all photos from all albums
+// The Portfolio is a curated highlight reel: only photos flagged `featured`
+// (and still published) appear here. Full sets live on each album page.
 const albums = await getAlbums();
 let allPhotos: any[] = [];
 
 for (const album of albums) {
-  for (const photo of album.photos) {
+  const picks = album.photos.filter((p) => p.featured && isPublished(p));
+  for (const photo of picks) {
     const imgData = await getGlobalAlbumImage(album.slug, photo.file);
     if (imgData) {
       allPhotos.push({
         ...photo,
+        albumSlug: album.slug,
         albumTitle: album.title,
         categories: album.categories.join(','),
         imgData
@@ -23,9 +26,6 @@ for (const album of albums) {
     }
   }
 }
-
-// Shuffle slightly for a better masonry look or sort by date/featured if preferred.
-// Here we just use the order they were processed (album by album).
 ---
 
 <BaseLayout title="Portfolio">
@@ -62,7 +62,8 @@ for (const album of albums) {
               alt={photo.caption || photo.albumTitle}
               width={800}
               class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
+              loading={index < 4 ? "eager" : "lazy"}
+              decoding="async"
             />
             
             <!-- Hover Overlay -->

@@ -9,5 +9,10 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  integrations: [sitemap()]
+  integrations: [
+    sitemap({
+      // Keep the private curation tool out of the sitemap.
+      filter: (page) => !page.includes('/review'),
+    }),
+  ],
 });

@@ -3,17 +3,27 @@
     {
       "name": "Portraits",
       "slug": "portraits",
-      "cover": "albums/saree-shoot/_DSC8231.jpg"
+      "cover": "albums/snow-day/_DSC3808.jpg"
+    },
+    {
+      "name": "Couples",
+      "slug": "couples",
+      "cover": "albums/couples/_DSC3081.jpg"
+    },
+    {
+      "name": "Maternity",
+      "slug": "maternity",
+      "cover": "albums/maternity/_DSC7823.jpg"
     },
     {
       "name": "Events",
       "slug": "events",
-      "cover": "albums/birthday-photoshoot/_DSC6098.jpg"
+      "cover": "albums/graduation-ceremony/_DSC6466.jpg"
     },
     {
       "name": "Cultural",
       "slug": "cultural",
-      "cover": "albums/pitha-uthsob/_DSC6373.jpg"
+      "cover": "albums/pohela-boishakh/_DSC4499.jpg"
     }
   ]
 }

@@ -5,6 +5,17 @@ export interface Photo {
     file: string;
     caption: string;
     featured?: boolean;
+    /**
+     * Controls public visibility. Defaults to true when omitted.
+     * Set to false to hide a photo from the public site while keeping it
+     * available in the private review tool (keep/discard curation).
+     */
+    published?: boolean;
+}
+
+/** A photo is shown publicly unless explicitly unpublished. */
+export function isPublished(photo: Photo): boolean {
+    return photo.published !== false;
 }
 
 export interface Album {

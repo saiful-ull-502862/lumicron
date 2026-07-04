@@ -1,0 +1,128 @@
+{
+  "title": "Mom To Be",
+  "slug": "maternity",
+  "date": "2025-03-10",
+  "location": "Studio",
+  "categories": [
+    "maternity",
+    "portraits"
+  ],
+  "description": "A tender celebration of new beginnings and the quiet glow of motherhood.",
+  "cover": "_DSC7823.jpg",
+  "photos": [
+    {
+      "file": "_DSC7823.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7844.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7854.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7863-2.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7872.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7876.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7879.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7894.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC7908-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC7935-3.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC7945.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC7988.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC7996.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8027.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8064.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8094.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8116.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8130.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC8144.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    }
+  ]
+}

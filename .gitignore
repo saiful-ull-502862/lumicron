@@ -27,18 +27,12 @@ npm-debug.log*
 vigorous-visual/
 oauth-worker/
 
-# Album photos — ignore all, then whitelist samples
-content/albums/**/*.jpg
-!content/albums/birthday-photoshoot/_DSC6098.jpg
-!content/albums/birthday-photoshoot/_DSC6141.jpg
-!content/albums/birthday-photoshoot/_DSC6144.jpg
-!content/albums/graduation-photoshoot/_DSC6465.jpg
-!content/albums/graduation-photoshoot/_DSC6466.jpg
-!content/albums/graduation-photoshoot/_DSC6469.jpg
-!content/albums/pitha-uthsob/_DSC6373.jpg
-!content/albums/pitha-uthsob/_DSC6376.jpg
-!content/albums/pitha-uthsob/_DSC6377.jpg
-!content/albums/saree-shoot/_DSC8231.jpg
-!content/albums/saree-shoot/_DSC8232.jpg
-!content/albums/saree-shoot/_DSC8252.jpg
-!content/albums/saree-shoot/_DSC8350.jpg
+# Album photos: web-optimized versions in content/albums/ ARE committed
+# (they are resized/compressed at import time, so the repo stays lean).
+
+# Do NOT commit the full-resolution originals — they are multi-GB.
+website photos/
+/_DSC*.jpg
+/*.CR2
+/*.ARW
+/*.NEF

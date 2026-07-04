@@ -2,25 +2,33 @@
 // src/pages/albums/[slug].astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Lightbox from '../../components/Lightbox.astro';
-import { getAlbums, getGlobalAlbumImage } from '../../utils/content';
+import { getAlbums, getGlobalAlbumImage, isPublished } from '../../utils/content';
 import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const albums = await getAlbums();
-  return albums.map(album => ({
+  return albums.map((album, i) => ({
     params: { slug: album.slug },
-    props: { album },
+    props: {
+      album,
+      prev: albums[(i - 1 + albums.length) % albums.length],
+      next: albums[(i + 1) % albums.length],
+    },
   }));
 }
 
-const { album } = Astro.props;
+const { album, prev, next } = Astro.props;
 const coverImg = await getGlobalAlbumImage(album.slug, album.cover);
 
+// Only publicly-published photos are rendered on the live site.
+const visiblePhotos = album.photos.filter(isPublished);
+
 // Load all image data for the gallery
-const photosData = await Promise.all(album.photos.map(async (photo) => {
+const photosData = await Promise.all(visiblePhotos.map(async (photo) => {
   const imgData = await getGlobalAlbumImage(album.slug, photo.file);
   return { ...photo, imgData };
 }));
+const photoCount = photosData.filter((p) => p.imgData).length;
 ---
 
 <BaseLayout title={album.title} description={album.description} image={coverImg?.src}>
@@ -42,6 +50,8 @@ const photosData = await Promise.all(album.photos.map(async (photo) => {
         <span>{album.categories[0]}</span>
         <span class="w-1 h-1 rounded-full bg-current"></span>
         <span>{album.date}</span>
+        <span class="w-1 h-1 rounded-full bg-current"></span>
+        <span>{photoCount} Photos</span>
       </div>
       
       <h1 class="text-5xl md:text-7xl font-serif italic text-white mb-6 leading-tight">
@@ -83,23 +93,39 @@ const photosData = await Promise.all(album.photos.map(async (photo) => {
               class="pswp-item block w-full hover-target cursor-zoom-in"
               target="_blank"
             >
-              <Image 
-                src={photo.imgData} 
-                alt={photo.caption}
+              <Image
+                src={photo.imgData}
+                alt={photo.caption || album.title}
                 width={800}
                 class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
                 loading={index < 4 ? "eager" : "lazy"}
+                decoding="async"
               />
-              
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p class="text-white text-sm font-light w-full truncate">{photo.caption}</p>
-              </div>
+
+              {photo.caption && (
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <p class="text-white text-sm font-light w-full truncate">{photo.caption}</p>
+                </div>
+              )}
             </a>
           </div>
         )
       ))}
     </div>
   </div>
+
+  <!-- Album navigation -->
+  <nav class="max-w-[1600px] mx-auto px-6 md:px-12 pb-28 pt-4 border-t border-[var(--border-color)] flex items-center justify-between gap-4 text-sm">
+    <a href={`/lumicron/albums/${prev.slug}`} class="hover-target group flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--color-brand-primary)] transition-colors">
+      <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      <span class="uppercase tracking-widest">Prev</span>
+    </a>
+    <a href="/lumicron/albums" class="hover-target uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--color-brand-primary)] transition-colors">All Albums</a>
+    <a href={`/lumicron/albums/${next.slug}`} class="hover-target group flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--color-brand-primary)] transition-colors">
+      <span class="uppercase tracking-widest">Next</span>
+      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+    </a>
+  </nav>
 
   <Lightbox />
 </BaseLayout>

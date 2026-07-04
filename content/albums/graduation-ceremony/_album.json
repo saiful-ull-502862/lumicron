@@ -1,0 +1,1531 @@
+{
+  "title": "Graduation Ceremony",
+  "slug": "graduation-ceremony",
+  "date": "2026-05-16",
+  "location": "University Campus",
+  "categories": [
+    "events"
+  ],
+  "description": "Caps in the air and years of hard work finally paying off \u2014 the full Spring 2026 graduation season, one proud milestone at a time.",
+  "cover": "_DSC0360.jpg",
+  "photos": [
+    {
+      "file": "_DSC0360.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0369-2.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0392-2.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0406.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0428.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0431-2.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0437.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0451.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC0460.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0463.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0471.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0477.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0481-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0490.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0499.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0505-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0515.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0545.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0546.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0556.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0563.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0567.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0578.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0579-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0586-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0590-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0593.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0604.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0615.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0621.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0626-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0637.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0646-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0649-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0650.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0656.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0664.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0665.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0684.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0688.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0692.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0694.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0700.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0705.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0707.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0708.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0714.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0718.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0725.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0732.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0739.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0741.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0748.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0751.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0753.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0760.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0766.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0768.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0775-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0779.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0781.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0785.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0793-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0801.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0805.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0867.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0868.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0911.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0920.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0934.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0935.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0955.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0957.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0962.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0972.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0974.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0992.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1002.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1010.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1024.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1027.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1033-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1038.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1042-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1042.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1052-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1054.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1058.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1064.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1080.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1101.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1109.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1117.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1128.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1132.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1142.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1148.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1156.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1158.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1161-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1161.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1199.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1220.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1226.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1234.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1238.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1245.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1262.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1296-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1304.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1309.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1320.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1321.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1329.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1331.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1353.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1357.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1359.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1363.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1368.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1376.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1379-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1389.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1396.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1400.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1404.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1407.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1410.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1413.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1420.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1430.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1435.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1438.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1443.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1518.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1520.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1524.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1527.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1530.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1535.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1539.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1545.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1549-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1552-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1558.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1563.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1565-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1566.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1571-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1574-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1579.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1598.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1609.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1611.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1617-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1628.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1629.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1635.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1639.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1643.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1647-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1651.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1655.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1661.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1664.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1670.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1674.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1679.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1686.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1689.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1691.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1695.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1697.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1704.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1706.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1712.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1714.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1732-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1733.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1738.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1740.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1743.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1755.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1775.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1791.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1799.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1821.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1828.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1835.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1847.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1850.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1853.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1857.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1867.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1875.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1882.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1884.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1893.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1894.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1907.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1920.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1925.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1935.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1941.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1944.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1948.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1951.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1955.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1959.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1962.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1964.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1966.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1981.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1993.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2002.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2007.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2009.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2016.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2029.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2032.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2037-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2037.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2040.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2045.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2073.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2076.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2087.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2091.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2096.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2101.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC2108.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6466.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6471.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6481.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6489.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6500.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6504.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6521.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6525.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6537.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6544.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6551.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6557.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6568.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6578.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6611.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6612.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6625.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6628.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6643.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6664.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6690.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6827.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    }
+  ]
+}

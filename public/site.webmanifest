@@ -1,0 +1,23 @@
+{
+  "name": "Lumicron",
+  "short_name": "Lumicron",
+  "description": "Photography portfolio by Saiful — Where Every Frame Finds Its Voice.",
+  "start_url": "/lumicron/",
+  "scope": "/lumicron/",
+  "display": "standalone",
+  "background_color": "#080706",
+  "theme_color": "#080706",
+  "icons": [
+    {
+      "src": "/lumicron/logo/lumicron-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/lumicron/logo/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

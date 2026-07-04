@@ -1,0 +1,67 @@
+{
+  "title": "Snow Day",
+  "slug": "snow-day",
+  "date": "2025-01-20",
+  "location": "On Location",
+  "categories": [
+    "portraits"
+  ],
+  "description": "Soft light on fresh snow \u2014 a crisp, quiet winter portrait story.",
+  "cover": "_DSC3808.jpg",
+  "photos": [
+    {
+      "file": "_DSC3808.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3823-2.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3836.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3844.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3891.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3895.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3921.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3935.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC3947.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    }
+  ]
+}

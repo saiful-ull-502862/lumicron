@@ -67,6 +67,8 @@ collections:
         min: 1
         options:
           - { label: "Portraits", value: "portraits" }
+          - { label: "Couples", value: "couples" }
+          - { label: "Maternity", value: "maternity" }
           - { label: "Events", value: "events" }
           - { label: "Cultural", value: "cultural" }
         required: true
@@ -85,7 +87,7 @@ collections:
       - label: "Photos"
         name: "photos"
         widget: "list"
-        summary: "{{fields.file}} — {{fields.caption}}"
+        summary: "{{fields.file}}{{#if fields.published}}{{else}}  ·  HIDDEN{{/if}}"
         allow_add: true
         collapsed: true
         fields:
@@ -104,6 +106,14 @@ collections:
             widget: "boolean"
             default: false
             required: false
+            hint: "Show this photo in the curated Portfolio highlight grid."
+
+          - label: "Show on website"
+            name: "published"
+            widget: "boolean"
+            default: true
+            required: false
+            hint: "Turn OFF to hide this photo from the public site (kept in the repo, just not shown)."
 
   # ── Site Settings ──
   - name: "settings"

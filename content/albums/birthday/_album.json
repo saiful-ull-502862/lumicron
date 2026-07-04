@@ -1,0 +1,133 @@
+{
+  "title": "Birthday Celebration",
+  "slug": "birthday",
+  "date": "2025-11-15",
+  "location": "Studio",
+  "categories": [
+    "events"
+  ],
+  "description": "Candlelight, laughter, and all the little in-between moments that make a birthday worth remembering.",
+  "cover": "_DSC6141.jpg",
+  "photos": [
+    {
+      "file": "_DSC6141.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6144.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6147.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6156.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6157.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6158.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6166.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6177.jpg",
+      "caption": "",
+      "featured": true,
+      "published": true
+    },
+    {
+      "file": "_DSC6228.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6239.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6257.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6270.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6288.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6299.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6325.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6331.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6351.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6356.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6369.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6371.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    }
+  ]
+}
