@@ -4,9 +4,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CategoryFilter from '../components/CategoryFilter.astro';
 import Lightbox from '../components/Lightbox.astro';
 import { getAlbums, getGlobalAlbumImage, isPublished, getPages } from '../utils/content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 
 const pages = await getPages();
+
+const LIGHTBOX_MAX = 1600;
+async function bigImage(imgData: any) {
+  const w = Math.min(LIGHTBOX_MAX, imgData.width);
+  const img = await getImage({ src: imgData, width: w, format: 'webp', quality: 80 });
+  return { src: img.src, width: w, height: Math.round(w * imgData.height / imgData.width) };
+}
 
 // The Portfolio is a curated highlight reel: only photos flagged `featured`
 // (and still published) appear here. Full sets live on each album page.
@@ -23,7 +30,8 @@ for (const album of albums) {
         albumSlug: album.slug,
         albumTitle: album.title,
         categories: album.categories.join(','),
-        imgData
+        imgData,
+        large: await bigImage(imgData)
       });
     }
   }
@@ -51,9 +59,9 @@ for (const album of albums) {
           data-aos-delay={index % 4 * 100}
         >
           <a 
-            href={photo.imgData.src} 
-            data-pswp-width={photo.imgData.width} 
-            data-pswp-height={photo.imgData.height} 
+            href={photo.large.src}
+            data-pswp-width={photo.large.width}
+            data-pswp-height={photo.large.height}
             class="pswp-item block w-full hover-target"
             target="_blank"
           >
