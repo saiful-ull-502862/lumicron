@@ -59,12 +59,16 @@ import '../styles/global.css';
 
     <!-- App -->
     <main id="appView" class="hidden max-w-[1500px] mx-auto px-4 py-6">
-      <div id="tabs" class="hidden flex gap-1 mb-5 border-b border-[var(--border-color)]">
+      <div id="tabs" class="hidden flex flex-wrap gap-1 mb-5 border-b border-[var(--border-color)]">
         <button id="tabAlbums" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-[var(--color-brand-primary)] text-[var(--text-color)]">Albums</button>
+        <button id="tabHome" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-transparent text-[var(--text-muted)] hover:text-[var(--text-color)]">Home</button>
+        <button id="tabPortfolio" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-transparent text-[var(--text-muted)] hover:text-[var(--text-color)]">Portfolio</button>
         <button id="tabPages" class="px-4 py-2 text-xs uppercase tracking-widest border-b-2 border-transparent text-[var(--text-muted)] hover:text-[var(--text-color)]">Pages &amp; Site</button>
       </div>
       <div id="loading" class="text-center text-[var(--text-muted)] py-24">Loading…</div>
       <section id="pagesView" class="hidden max-w-[900px] mx-auto space-y-8"></section>
+      <section id="homeView" class="hidden max-w-[1100px] mx-auto"></section>
+      <section id="portfolioView" class="hidden max-w-[1400px] mx-auto"></section>
       <div id="app" class="hidden grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
         <!-- Sidebar: albums -->
         <aside class="lg:sticky lg:top-20 self-start">
@@ -105,7 +109,8 @@ import '../styles/global.css';
       let activeSlug = null;
       const deletedAlbumFiles = {}; // slug -> [paths] to remove on save
       let siteConfig = null, pages = null;   // content/site-config.json, content/pages.json
-      let siteDirty = false, pagesDirty = false;
+      let featured = [];                     // content/featured.json -> Home "Featured Collections"
+      let siteDirty = false, pagesDirty = false, featuredDirty = false;
       let view = 'albums';
 
       // ---------- helpers ----------
@@ -120,9 +125,9 @@ import '../styles/global.css';
       function utf8ToB64(str) { return btoa(unescape(encodeURIComponent(str))); }
       function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
       function markDirty(a) { if (a) a._dirty = true; updatePending(); }
-      function anyDirty() { return albums.some(a => a._dirty || a._new || a._deleted) || Object.keys(deletedAlbumFiles).length || siteDirty || pagesDirty; }
+      function anyDirty() { return albums.some(a => a._dirty || a._new || a._deleted) || Object.keys(deletedAlbumFiles).length || siteDirty || pagesDirty || featuredDirty; }
       function updatePending() {
-        const n = albums.filter(a => a._dirty || a._new).length + albums.filter(a => a._deleted).length + (siteDirty ? 1 : 0) + (pagesDirty ? 1 : 0);
+        const n = albums.filter(a => a._dirty || a._new).length + albums.filter(a => a._deleted).length + (siteDirty ? 1 : 0) + (pagesDirty ? 1 : 0) + (featuredDirty ? 1 : 0);
         $('pending').textContent = anyDirty() ? `${n} unsaved change${n === 1 ? '' : 's'}` : '';
         $('saveBtn').disabled = !anyDirty();
       }
@@ -210,17 +215,29 @@ import '../styles/global.css';
         pages.about.gear = pages.about.gear || [];
         pages.about.people = pages.about.people || [];
         siteConfig.socialLinks = siteConfig.socialLinks || {};
+        try {
+          const fj = await gh(`/repos/${REPO}/contents/content/featured.json?ref=${BRANCH}`);
+          const raw = JSON.parse(b64ToUtf8(fj.content));
+          featured = Array.isArray(raw) ? raw : (raw.featured || []);
+        } catch (e) { featured = featured || []; }
       }
 
       function switchView(v) {
         view = v;
         const on = 'border-[var(--color-brand-primary)] text-[var(--text-color)]';
         const off = 'border-transparent text-[var(--text-muted)]';
-        $('tabAlbums').className = `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${v === 'albums' ? on : off} hover:text-[var(--text-color)]`;
-        $('tabPages').className = `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${v === 'pages' ? on : off} hover:text-[var(--text-color)]`;
+        const cls = (active) => `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${active ? on : off} hover:text-[var(--text-color)]`;
+        $('tabAlbums').className = cls(v === 'albums');
+        $('tabHome').className = cls(v === 'home');
+        $('tabPortfolio').className = cls(v === 'portfolio');
+        $('tabPages').className = cls(v === 'pages');
         $('app').classList.toggle('hidden', v !== 'albums');
+        $('homeView').classList.toggle('hidden', v !== 'home');
+        $('portfolioView').classList.toggle('hidden', v !== 'portfolio');
         $('pagesView').classList.toggle('hidden', v !== 'pages');
         if (v === 'pages') renderPages();
+        if (v === 'home') renderHome();
+        if (v === 'portfolio') renderPortfolio();
       }
 
       async function loadAlbums() {
@@ -329,11 +346,13 @@ import '../styles/global.css';
             <button title="Show/Hide" data-a="pub" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-black">${p.published ? eye() : eyeOff()}</button>
             <button title="Feature in Portfolio" data-a="feat" class="w-7 h-7 grid place-items-center rounded bg-black/60 ${p.featured ? 'text-yellow-300' : 'text-white'} hover:bg-black">★</button>
             <button title="Set as cover" data-a="cover" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-black">◎</button>
+            <button title="Move to another album" data-a="move" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-black">↗</button>
             <button title="Delete" data-a="del" class="w-7 h-7 grid place-items-center rounded bg-black/60 text-white hover:bg-red-600">🗑</button>
           </div>`;
         card.querySelector('[data-a="pub"]').onclick = () => { p.published = !p.published; markDirty(a); renderEditor(); renderSidebar(); };
         card.querySelector('[data-a="feat"]').onclick = () => { p.featured = !p.featured; markDirty(a); renderEditor(); };
         card.querySelector('[data-a="cover"]').onclick = () => { a.cover = p.file; markDirty(a); renderEditor(); };
+        card.querySelector('[data-a="move"]').onclick = () => openAlbumPicker(a.slug, (toSlug) => performMove(a, p, toSlug));
         card.querySelector('[data-a="del"]').onclick = () => {
           if (!confirm('Remove this photo from the album? (applies when you Save & Publish)')) return;
           if (!p._new) { deletedAlbumFiles[a.slug] = deletedAlbumFiles[a.slug] || []; deletedAlbumFiles[a.slug].push(`content/albums/${a.slug}/${p.file}`); }
@@ -362,6 +381,39 @@ import '../styles/global.css';
             markDirty(a); renderEditor();
           });
         });
+      }
+
+      // ---------- move photo between albums ----------
+      function openAlbumPicker(excludeSlug, cb) {
+        const targets = albums.filter(a => !a._deleted && a.slug !== excludeSlug);
+        if (!targets.length) { toast('No other album to move to — create one first.'); return; }
+        const ov = el('div', 'fixed inset-0 z-[200] bg-black/85 grid place-items-center p-6');
+        const box = el('div', 'bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg p-6 max-w-sm w-full');
+        box.appendChild(el('h3', 'text-lg font-serif italic text-[var(--color-brand-primary)] mb-4', 'Move photo to…'));
+        const list = el('div', 'space-y-1.5 max-h-[50vh] overflow-auto');
+        targets.forEach(t => {
+          const b = el('button', 'w-full text-left px-3 py-2 rounded border border-[var(--border-color)] hover:border-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary)] transition text-sm', `${t.title || t.slug} <span class="text-[var(--text-muted)]">· ${t.photos.length}</span>`);
+          b.onclick = () => { ov.remove(); cb(t.slug); };
+          list.appendChild(b);
+        });
+        box.appendChild(list);
+        const cancel = el('button', 'mt-4 text-xs uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--text-color)]', 'Cancel');
+        cancel.onclick = () => ov.remove(); box.appendChild(cancel);
+        ov.appendChild(box); document.body.appendChild(ov);
+      }
+      function performMove(from, photo, toSlug) {
+        const to = albums.find(a => a.slug === toSlug); if (!to) return;
+        // ensure unique filename in the destination
+        let name = photo.file; const existing = new Set(to.photos.map(p => p.file));
+        if (existing.has(name)) { const base = name.replace(/\.[^.]+$/, ''), ext = name.slice(base.length); let i = 1; while (existing.has(`${base}_${i}${ext}`)) i++; name = `${base}_${i}${ext}`; }
+        const moved = { file: name, caption: photo.caption || '', featured: !!photo.featured, published: photo.published !== false };
+        if (photo._new) { moved._new = true; moved._base64 = photo._base64; moved._url = photo._url; }
+        else { moved._movedFrom = { slug: from.slug, file: photo.file }; moved._url = `${RAW}/content/albums/${from.slug}/${photo.file}`; }
+        const idx = from.photos.indexOf(photo); from.photos.splice(idx, 1);
+        if (from.cover === photo.file) from.cover = from.photos[0] ? from.photos[0].file : '';
+        to.photos.push(moved); if (!to.cover) to.cover = name;
+        markDirty(from); markDirty(to); renderEditor(); renderSidebar();
+        toast(`Moved to “${to.title || to.slug}”. Publish to apply.`);
       }
 
       // ---------- uploads (resize client-side) ----------
@@ -513,8 +565,7 @@ import '../styles/global.css';
           pfield('Twitter URL', sl.twitter || '', v => { sl.twitter = v; markSite(); }),
         ]));
         const h = pages.home;
-        wrap.appendChild(psection('Home page', [
-          pimage('Hero background image', h.heroImage, ref => { h.heroImage = ref; markPages(); renderPages(); }),
+        wrap.appendChild(psection('Home page (hero image & featured grid are in the Home tab)', [
           pfield('Hero button text', h.ctaText, v => { h.ctaText = v; markPages(); }),
           pfield('Featured section heading', h.featuredHeading, v => { h.featuredHeading = v; markPages(); }),
         ]));
@@ -537,6 +588,65 @@ import '../styles/global.css';
           pfield('Heading', c.heading, v => { c.heading = v; markPages(); }),
           ptext('Intro text', c.intro, v => { c.intro = v; markPages(); }),
         ]));
+      }
+
+      // ---------- Home (featured collections) editor ----------
+      function markFeatured() { featuredDirty = true; updatePending(); }
+      function renderHome() {
+        const wrap = $('homeView'); wrap.innerHTML = '';
+        if (!pages) { wrap.innerHTML = '<p class="text-[var(--text-muted)] py-10 text-center">Loading…</p>'; return; }
+        const heroSec = el('div', 'border border-[var(--border-color)] rounded p-5 mb-6');
+        heroSec.appendChild(el('h2', 'text-lg font-serif italic text-[var(--color-brand-primary)] mb-4', 'Home hero'));
+        heroSec.appendChild(pimage('Hero background image', pages.home.heroImage, ref => { pages.home.heroImage = ref; markPages(); renderHome(); }));
+        wrap.appendChild(heroSec);
+
+        const sec = el('div', 'border border-[var(--border-color)] rounded p-5');
+        const head = el('div', 'flex items-center justify-between mb-4');
+        head.appendChild(el('h2', 'text-lg font-serif italic text-[var(--color-brand-primary)]', 'Featured Collections'));
+        const add = el('button', 'text-xs uppercase tracking-widest text-[var(--color-brand-accent)]', '+ Add photo');
+        add.onclick = () => openPicker(sel => { const al = albums.find(a => a.slug === sel.albumSlug); featured.push({ albumSlug: sel.albumSlug, file: sel.file, title: al ? (al.title || al.slug) : '', category: (al && al.categories && al.categories[0]) || 'events' }); markFeatured(); renderHome(); });
+        head.appendChild(add); sec.appendChild(head);
+        const grid = el('div', 'grid grid-cols-2 sm:grid-cols-3 gap-3');
+        featured.forEach((f, i) => {
+          const card = el('div', 'border border-[var(--border-color)] rounded overflow-hidden'); card.draggable = true; card.dataset.idx = i;
+          card.innerHTML = `<div class="aspect-[4/5] bg-[var(--bg-secondary)]"><img src="${RAW}/content/albums/${f.albumSlug}/${f.file}" loading="lazy" class="w-full h-full object-cover pointer-events-none"></div>`;
+          const body = el('div', 'p-2 space-y-1.5');
+          const t = el('input', 'w-full bg-transparent border-b border-[var(--border-color)] text-sm py-1'); t.value = f.title || ''; t.placeholder = 'Title'; t.oninput = () => { f.title = t.value; markFeatured(); };
+          body.appendChild(t);
+          const row = el('div', 'flex justify-between items-center');
+          const chg = el('button', 'text-[11px] uppercase tracking-wider text-[var(--color-brand-accent)]', 'Change'); chg.onclick = () => openPicker(sel => { f.albumSlug = sel.albumSlug; f.file = sel.file; const al = albums.find(a => a.slug === sel.albumSlug); if (al && al.categories && al.categories[0]) f.category = al.categories[0]; markFeatured(); renderHome(); });
+          const rm = el('button', 'text-[11px] uppercase tracking-wider text-red-400', 'Remove'); rm.onclick = () => { featured.splice(i, 1); markFeatured(); renderHome(); };
+          row.append(chg, rm); body.appendChild(row); card.appendChild(body); grid.appendChild(card);
+        });
+        sec.appendChild(grid);
+        sec.appendChild(el('p', 'text-xs text-[var(--text-muted)] mt-3', 'Drag cards to reorder. These show in the “Featured Collections” grid on your home page.'));
+        wrap.appendChild(sec);
+        let di = null;
+        grid.querySelectorAll('[draggable]').forEach(card => {
+          card.addEventListener('dragstart', () => di = +card.dataset.idx);
+          card.addEventListener('dragover', e => e.preventDefault());
+          card.addEventListener('drop', e => { e.preventDefault(); const dr = +card.dataset.idx; if (di == null || di === dr) return; const [m] = featured.splice(di, 1); featured.splice(dr, 0, m); markFeatured(); renderHome(); });
+        });
+      }
+
+      // ---------- Portfolio grid editor ----------
+      function renderPortfolio() {
+        const wrap = $('portfolioView'); wrap.innerHTML = '';
+        const items = [];
+        albums.filter(a => !a._deleted).forEach(a => a.photos.forEach(p => { if (p.featured && p.published !== false) items.push({ a, p }); }));
+        wrap.appendChild(el('h2', 'text-lg font-serif italic text-[var(--color-brand-primary)] mb-2', `Portfolio grid — ${items.length} photos`));
+        wrap.appendChild(el('p', 'text-xs text-[var(--text-muted)] mb-4', 'These are the photos shown on your Portfolio page (the “featured” ones). Click ★ to remove one. To add more, open an album and star a photo.'));
+        if (!items.length) { wrap.appendChild(el('p', 'text-[var(--text-muted)] py-10 text-center', 'No featured photos yet — star photos in the Albums tab to feature them here.')); return; }
+        const grid = el('div', 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2');
+        items.forEach(({ a, p }) => {
+          const card = el('div', 'group relative aspect-square overflow-hidden bg-[var(--bg-secondary)]');
+          card.innerHTML = `<img src="${p._url || `${RAW}/content/albums/${a.slug}/${p.file}`}" loading="lazy" class="w-full h-full object-cover">
+            <span class="absolute top-1 left-1 text-[9px] uppercase tracking-wider bg-black/60 text-white px-1 rounded-sm">${a.title || a.slug}</span>
+            <button title="Remove from Portfolio" class="absolute bottom-1 right-1 w-7 h-7 grid place-items-center rounded bg-black/60 text-yellow-300 opacity-0 group-hover:opacity-100 hover:bg-black">★</button>`;
+          card.querySelector('button').onclick = () => { p.featured = false; markDirty(a); renderPortfolio(); };
+          grid.appendChild(card);
+        });
+        wrap.appendChild(grid);
       }
 
       // ---------- save & publish (single commit via Git Data API) ----------
@@ -566,6 +676,14 @@ import '../styles/global.css';
                 tree.push({ path: `content/albums/${a.slug}/${p.file}`, mode: '100644', type: 'blob', sha: blob.sha });
               }
             }
+            // moved-in photos: reuse the existing blob at the new path, delete the old path
+            for (const p of a.photos) {
+              if (p._movedFrom) {
+                const info = await gh(`/repos/${REPO}/contents/content/albums/${p._movedFrom.slug}/${encodeURIComponent(p._movedFrom.file)}?ref=${BRANCH}`);
+                tree.push({ path: `content/albums/${a.slug}/${p.file}`, mode: '100644', type: 'blob', sha: info.sha });
+                tree.push({ path: `content/albums/${p._movedFrom.slug}/${p._movedFrom.file}`, mode: '100644', type: 'blob', sha: null });
+              }
+            }
             // _album.json
             const json = {
               title: a.title || a.slug, slug: a.slug, date: a.date || new Date().toISOString().slice(0, 10),
@@ -586,6 +704,10 @@ import '../styles/global.css';
             const b = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: utf8ToB64(JSON.stringify(pages, null, 2)), encoding: 'base64' }) });
             tree.push({ path: 'content/pages.json', mode: '100644', type: 'blob', sha: b.sha });
           }
+          if (featuredDirty) {
+            const b = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: utf8ToB64(JSON.stringify({ featured }, null, 2)), encoding: 'base64' }) });
+            tree.push({ path: 'content/featured.json', mode: '100644', type: 'blob', sha: b.sha });
+          }
 
           if (!tree.length) { toast('Nothing to publish.'); btn.disabled = false; btn.textContent = original; return; }
 
@@ -595,10 +717,12 @@ import '../styles/global.css';
 
           // clear dirty state
           albums = albums.filter(a => !a._deleted);
-          albums.forEach(a => { a._dirty = false; a._new = false; a.photos.forEach(p => { delete p._new; delete p._base64; }); });
+          albums.forEach(a => { a._dirty = false; a._new = false; a.photos.forEach(p => { delete p._new; delete p._base64; delete p._movedFrom; }); });
           for (const k in deletedAlbumFiles) delete deletedAlbumFiles[k];
-          siteDirty = false; pagesDirty = false;
-          renderSidebar(); renderEditor(); if (view === 'pages') renderPages(); updatePending();
+          siteDirty = false; pagesDirty = false; featuredDirty = false;
+          renderSidebar(); renderEditor();
+          if (view === 'pages') renderPages(); if (view === 'home') renderHome(); if (view === 'portfolio') renderPortfolio();
+          updatePending();
           btn.textContent = original; btn.disabled = false;
           toast('✓ Published! Your site rebuilds and updates in ~1–2 minutes.', 6000);
         } catch (err) {
@@ -617,6 +741,8 @@ import '../styles/global.css';
       $('saveBtn').onclick = save;
       $('newAlbumBtn').onclick = newAlbum;
       $('tabAlbums').onclick = () => switchView('albums');
+      $('tabHome').onclick = () => switchView('home');
+      $('tabPortfolio').onclick = () => switchView('portfolio');
       $('tabPages').onclick = () => switchView('pages');
       window.addEventListener('beforeunload', (e) => { if (anyDirty()) { e.preventDefault(); e.returnValue = ''; } });
 
