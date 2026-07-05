@@ -7,7 +7,7 @@
     "couples",
     "portraits"
   ],
-  "description": "Two people, one frame \u2014 unguarded closeness and the glances words can't hold.",
+  "description": "Two people, one frame — unguarded closeness and the glances words can't hold.",
   "cover": "_DSC3081.jpg",
   "photos": [
     {
@@ -72,6 +72,54 @@
     },
     {
       "file": "_DSC5603.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0490.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC0753.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1379-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1565-2.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1664.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1679.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC1706.jpg",
+      "caption": "",
+      "featured": false,
+      "published": true
+    },
+    {
+      "file": "_DSC6544.jpg",
       "caption": "",
       "featured": false,
       "published": true
