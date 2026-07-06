@@ -22,8 +22,12 @@ const contact = (await getPages()).contact;
     </div>
 
     <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-8 md:p-12" data-aos="fade-up" data-aos-delay="200">
-      <form action={`mailto:${contactEmail}`} method="POST" enctype="text/plain" class="space-y-8">
-        
+      <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-8">
+        <input type="hidden" name="access_key" value="adf63b8e-ab62-4a23-b6d5-69b8e8c5db21" />
+        <input type="hidden" name="from_name" value="Lumicron Website" />
+        <!-- Honeypot spam trap (hidden from real users) -->
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-2">
             <label for="name" class="block text-xs uppercase tracking-widest text-[var(--text-color)] font-medium">Name</label>
@@ -74,6 +78,8 @@ const contact = (await getPages()).contact;
           ></textarea>
         </div>
 
+        <p id="form-status" class="hidden text-sm tracking-wide"></p>
+
         <div class="pt-4 flex justify-between items-center">
           <div class="flex space-x-4">
             {Object.entries(siteConfig.socialLinks).map(([platform, url]) => (
@@ -85,7 +91,7 @@ const contact = (await getPages()).contact;
             ))}
           </div>
           
-          <button type="submit" class="hover-target inline-block px-10 py-4 bg-[var(--text-color)] text-[var(--bg-color)] hover:bg-[var(--color-brand-primary)] hover:text-white transition-colors duration-300 uppercase tracking-widest text-sm font-medium">
+          <button id="send-btn" type="submit" class="hover-target inline-block px-10 py-4 bg-[var(--text-color)] text-[var(--bg-color)] hover:bg-[var(--color-brand-primary)] hover:text-white transition-colors duration-300 uppercase tracking-widest text-sm font-medium disabled:opacity-50">
             Send Message
           </button>
         </div>
@@ -94,4 +100,46 @@ const contact = (await getPages()).contact;
     </div>
 
   </div>
+
+  <script is:inline>
+    function initContactForm() {
+      const form = document.getElementById('contact-form');
+      if (!form || form.dataset.bound) return;
+      form.dataset.bound = '1';
+      const statusEl = document.getElementById('form-status');
+      const btn = document.getElementById('send-btn');
+      const setStatus = (msg, ok) => {
+        statusEl.textContent = msg;
+        statusEl.classList.remove('hidden');
+        statusEl.style.color = ok ? 'var(--color-brand-accent)' : '#e07a7a';
+      };
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (form.botcheck && form.botcheck.checked) return; // spam bot
+        btn.disabled = true; const label = btn.textContent; btn.textContent = 'Sending…';
+        setStatus('', true); statusEl.classList.add('hidden');
+        try {
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: new FormData(form),
+          });
+          const data = await res.json();
+          if (data.success) {
+            setStatus('Thank you — your message has been sent. I’ll get back to you soon.', true);
+            form.reset();
+          } else {
+            setStatus(data.message || 'Something went wrong. Please email me directly.', false);
+          }
+        } catch (err) {
+          setStatus('Network error — please try again or email me directly.', false);
+        } finally {
+          btn.disabled = false; btn.textContent = label;
+        }
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initContactForm);
+    document.addEventListener('astro:page-load', initContactForm);
+    initContactForm();
+  </script>
 </BaseLayout>
